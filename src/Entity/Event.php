@@ -25,12 +25,6 @@ class Event
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    private ?\DateTimeInterface $startDate = null;
-
-    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    private ?\DateTimeInterface $endDate = null;
-
     #[ORM\Column(nullable: true)]
     private ?int $maxAttendeesNumber = null;
 
@@ -42,6 +36,12 @@ class Event
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
+
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    private ?\DateTimeInterface $startDate = null;
+
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $registrationStartDate = null;
@@ -70,11 +70,9 @@ class Event
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): void
     {
         $this->name = $name;
-
-        return $this;
     }
 
     public function getDescription(): ?string
@@ -82,11 +80,9 @@ class Event
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
-
-        return $this;
     }
 
     public function getStartDate(): ?\DateTimeInterface
@@ -94,11 +90,9 @@ class Event
         return $this->startDate;
     }
 
-    public function setStartDate(\DateTimeInterface $startDate): self
+    public function setStartDate(\DateTimeInterface $startDate): void
     {
         $this->startDate = $startDate;
-
-        return $this;
     }
 
     public function getEndDate(): ?\DateTimeInterface
@@ -106,11 +100,9 @@ class Event
         return $this->endDate;
     }
 
-    public function setEndDate(\DateTimeInterface $endDate): self
+    public function setEndDate(\DateTimeInterface $endDate): void
     {
         $this->endDate = $endDate;
-
-        return $this;
     }
 
     public function getMaxAttendeesNumber(): ?int
@@ -118,11 +110,9 @@ class Event
         return $this->maxAttendeesNumber;
     }
 
-    public function setMaxAttendeesNumber(?int $maxAttendeesNumber): self
+    public function setMaxAttendeesNumber(?int $maxAttendeesNumber): void
     {
         $this->maxAttendeesNumber = $maxAttendeesNumber;
-
-        return $this;
     }
 
     public function getParent(): ?self
@@ -130,11 +120,9 @@ class Event
         return $this->parent;
     }
 
-    public function setParent(?self $parent): self
+    public function setParent(?self $parent): void
     {
         $this->parent = $parent;
-
-        return $this;
     }
 
     /**
@@ -145,17 +133,15 @@ class Event
         return $this->children;
     }
 
-    public function addChild(self $child): self
+    public function addChild(self $child): void
     {
         if (!$this->children->contains($child)) {
             $this->children->add($child);
             $child->setParent($this);
         }
-
-        return $this;
     }
 
-    public function removeChild(self $child): self
+    public function removeChild(self $child): void
     {
         if ($this->children->removeElement($child)) {
             // set the owning side to null (unless already changed)
@@ -163,8 +149,6 @@ class Event
                 $child->setParent(null);
             }
         }
-
-        return $this;
     }
 
     public function getStatus(): ?string
@@ -172,11 +156,9 @@ class Event
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(string $status): void
     {
         $this->status = $status;
-
-        return $this;
     }
 
     public function getRegistrationStartDate(): ?\DateTimeInterface
@@ -184,11 +166,9 @@ class Event
         return $this->registrationStartDate;
     }
 
-    public function setRegistrationStartDate(?\DateTimeInterface $registrationStartDate): self
+    public function setRegistrationStartDate(?\DateTimeInterface $registrationStartDate): void
     {
         $this->registrationStartDate = $registrationStartDate;
-
-        return $this;
     }
 
     public function getRegistrationEndDate(): ?\DateTimeInterface
@@ -196,11 +176,9 @@ class Event
         return $this->registrationEndDate;
     }
 
-    public function setRegistrationEndDate(?\DateTimeInterface $registrationEndDate): self
+    public function setRegistrationEndDate(?\DateTimeInterface $registrationEndDate): void
     {
         $this->registrationEndDate = $registrationEndDate;
-
-        return $this;
     }
 
     public function getAccessStartDate(): ?\DateTimeInterface
@@ -208,11 +186,9 @@ class Event
         return $this->accessStartDate;
     }
 
-    public function setAccessStartDate(?\DateTimeInterface $accessStartDate): self
+    public function setAccessStartDate(?\DateTimeInterface $accessStartDate): void
     {
         $this->accessStartDate = $accessStartDate;
-
-        return $this;
     }
 
     public function getAccessEndDate(): ?\DateTimeInterface
@@ -220,11 +196,8 @@ class Event
         return $this->accessEndDate;
     }
 
-    public function setAccessEndDate(?\DateTimeInterface $accessEndDate): self
+    public function setAccessEndDate(?\DateTimeInterface $accessEndDate): void
     {
         $this->accessEndDate = $accessEndDate;
-
-        return $this;
     }
-
 }
