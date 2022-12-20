@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Model\DescriptionTrait;
+use App\Model\IdentifiableTrait;
+use App\Model\NameTrait;
 use App\Model\TimeStampableTrait;
 use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -14,24 +17,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EventRepository::class),ORM\HasLifecycleCallbacks]
 class Event
 {
-    use TimeStampableTrait;
+    use TimeStampableTrait, IdentifiableTrait, NameTrait, DescriptionTrait;
 
-    public function __toString(): string
-    {
-        // TODO: Implement __toString() method.
-        return $this->name ?? 'nd';
-    }
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_PUBLISHED = 'published';
+    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUSES = [self::STATUS_CANCELLED, self::STATUS_DRAFT, self::STATUS_PUBLISHED];
 
     #[ORM\Column(nullable: true)]
     private ?int $maxAttendeesNumber = null;
@@ -64,34 +55,12 @@ class Event
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $accessEndDate = null;
 
+    #[ORM\ManyToOne]
+    private ?Place $place = null;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): void
-    {
-        $this->description = $description;
     }
 
     public function getStartDate(): ?\DateTimeInterface
@@ -208,5 +177,17 @@ class Event
     public function setAccessEndDate(?\DateTimeInterface $accessEndDate): void
     {
         $this->accessEndDate = $accessEndDate;
+    }
+
+    public function getPlace(): ?Place
+    {
+        return $this->place;
+    }
+
+    public function setPlace(?Place $place): self
+    {
+        $this->place = $place;
+
+        return $this;
     }
 }

@@ -31,6 +31,7 @@ class EventType extends AbstractType
             ->add('accessStartDate')
             ->add('accessEndDate')
             ->add('parent')
+            ->add('place')
         ;
     }
 
