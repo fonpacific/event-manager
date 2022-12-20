@@ -9,10 +9,18 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EventRepository::class)]
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ORM\Entity(repositoryClass: EventRepository::class),ORM\HasLifecycleCallbacks]
 class Event
 {
     use TimeStampableTrait;
+
+    public function __toString(): string
+    {
+        // TODO: Implement __toString() method.
+        return $this->name ?? 'nd';
+    }
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -35,6 +43,7 @@ class Event
     private Collection $children;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
