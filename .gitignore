@@ -1,5 +1,6 @@
 /.idea/
-
+/public/build/
+/public/images
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
