@@ -39,6 +39,20 @@ class EventRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAvailable(): array
+    {
+        $now = new \DateTime();
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.endDate >= :now')
+            ->andWhere('e.status IN (:statuses)')
+            ->setParameter('now', $now)
+            ->setParameter('statuses', Event::STATUSES_AVAILABLE)
+            ->orderBy('e.startDate', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return Event[] Returns an array of Event objects
 //     */

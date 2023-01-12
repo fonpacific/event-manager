@@ -1,0 +1,14 @@
+{% macro two_fields_same_row(field1, field2) %}
+    <div class="row">
+        <div class="col">
+            {{ form_row(field1) }}
+        </div>
+        <div class="col">
+            {{ form_row(field2) }}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro two_dates_same_row(date1, date2) %}
+    {{ _self.two_fields_same_row(date1, date2) }}
+{% endmacro %}

@@ -1,5 +1,21 @@
-{% dump(form) %}
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{% import "macro/forms.html.twig" as forms %}
+
+<div class="row">
+    <div class="col">
+        {{ form_start(form) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.parent) }}
+            {{ form_row(form.place) }}
+            <h5>Event dates</h5>
+
+            {{ forms.two_dates_same_row(form.startDate, form.endDate)  }}
+            {{ forms.two_dates_same_row(form.registrationStartDate, form.registrationEndDate)  }}
+            {{ forms.two_dates_same_row(form.accessStartDate, form.accessEndDate)  }}
+
+             <h5>Details</h5>
+            {{ form_row(form.description) }}
+            {{ form_row(form.maxAttendeesNumber) }}
+            <button class="btn">{{ button_label|default('Save') }}</button>
+        {{ form_end(form, {'render_rest' : false}) }}
+    </div>
+</div>

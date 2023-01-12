@@ -23,6 +23,7 @@ class Event
     public const STATUS_PUBLISHED = 'published';
     public const STATUS_CANCELLED = 'cancelled';
     public const STATUSES = [self::STATUS_CANCELLED, self::STATUS_DRAFT, self::STATUS_PUBLISHED];
+    public const STATUSES_AVAILABLE = [self::STATUS_PUBLISHED, self::STATUS_CANCELLED];
 
     #[ORM\Column(nullable: true)]
     private ?int $maxAttendeesNumber = null;

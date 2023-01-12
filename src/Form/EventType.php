@@ -5,6 +5,9 @@ namespace App\Form;
 use App\Entity\Event;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,7 +18,9 @@ class EventType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('maxAttendeesNumber')
+            ->add('maxAttendeesNumber', IntegerType::class, [
+                'label' => 'Maximum number of participants'
+            ])
             ->add('status', ChoiceType::class, [
                 'choices'  => [
                     'Draft' => 'draft',
@@ -24,12 +29,24 @@ class EventType extends AbstractType
                 'placeholder' => 'Select status',
                 'required' => false,
             ])
-            ->add('startDate')
-            ->add('endDate')
-            ->add('registrationStartDate')
-            ->add('registrationEndDate')
-            ->add('accessStartDate')
-            ->add('accessEndDate')
+            ->add('startDate', DateTimeType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('endDate', DateTimeType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('registrationStartDate', DateTimeType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('registrationEndDate', DateTimeType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('accessStartDate', DateTimeType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('accessEndDate', DateTimeType::class, [
+                'widget' => 'single_text',
+            ])
             ->add('parent')
             ->add('place')
         ;

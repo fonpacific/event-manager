@@ -1,57 +1,31 @@
 {% extends 'base.html.twig' %}
+{% import "macro/events.html.twig" as event_macro %}
 
 {% block title %}Event index{% endblock %}
+{% block container_class %}container-fluid{% endblock %}
 
 {% block body %}
-    <h1>Event index</h1>
+    <div class="row">
+        <div class="col">
+            <h1>Event index</h1>
+        </div>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>MaxAttendeesNumber</th>
-                <th>Status</th>
-                <th>StartDate</th>
-                <th>EndDate</th>
-                <th>RegistrationStartDate</th>
-                <th>RegistrationEndDate</th>
-                <th>AccessStartDate</th>
-                <th>AccessEndDate</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-success" href="{{ path('app_event_new') }}">Create new</a>
+        </div>
+    </div>
+
+    <div class="row mt-4">
         {% for event in events %}
-            <tr>
-                <td>{{ event.id }}</td>
-                <td>{{ event.name }}</td>
-                <td>{{ event.description }}</td>
-                <td>{{ event.maxAttendeesNumber }}</td>
-                <td>{{ event.status }}</td>
-                <td>{{ event.startDate ? event.startDate|date('Y-m-d H:i:s T') : '' }}</td>
-                <td>{{ event.endDate ? event.endDate|date('Y-m-d H:i:s T') : '' }}</td>
-                <td>{{ event.registrationStartDate ? event.registrationStartDate|date('Y-m-d H:i:s T') : '' }}</td>
-                <td>{{ event.registrationEndDate ? event.registrationEndDate|date('Y-m-d H:i:s T') : '' }}</td>
-                <td>{{ event.accessStartDate ? event.accessStartDate|date('Y-m-d H:i:s T') : '' }}</td>
-                <td>{{ event.accessEndDate ? event.accessEndDate|date('Y-m-d H:i:s T') : '' }}</td>
-                <td>{{ event.createdAt ? event.createdAt|date('Y-m-d H:i:s T') : '' }}</td>
-                <td>{{ event.updatedAt ? event.updatedAt|date('Y-m-d H:i:s T') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_event_show', {'id': event.id}) }}">show</a>
-                    <a href="{{ path('app_event_edit', {'id': event.id}) }}">edit</a>
-                </td>
-            </tr>
+            <div class="col-12 col-lg-3 mb-3">
+                {{ event_macro.default_card(event) }}
+            </div>
         {% else %}
-            <tr>
-                <td colspan="14">no records found</td>
-            </tr>
+            <div class="col">
+                <p>no records found</p>
+            </div>
         {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_event_new') }}">Create new</a>
+    </div>
 {% endblock %}

@@ -1,0 +1,17 @@
+{% macro default_card(event) %}
+    <div class="card h-100">
+        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ event.name }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ event.name }}</h5>
+            <p class="card-text">{{ _self.status_badge(event.status) }}</p>
+            <p class="card-text">{{ event.description }}</p>
+            <p class="card-text">{{ event.startDate ? event.startDate|date('d-m-Y') : 'NA' }} -> {{ event.endDate ? event.endDate|date('d-m-Y') : 'NA' }}</p>
+
+            <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-primary">Details</a>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro status_badge(status) %}
+    <span class="badge text-bg-{{ status|event_status_class }}">{{ status|event_status_label }}</span>
+{% endmacro %}
