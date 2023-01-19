@@ -35,11 +35,9 @@ class Place
         return $this->streetAddress;
     }
 
-    public function setStreetAddress(?string $streetAddress): self
+    public function setStreetAddress(?string $streetAddress): void
     {
         $this->streetAddress = $streetAddress;
-
-        return $this;
     }
 
     public function getPostalCode(): ?string
@@ -47,11 +45,9 @@ class Place
         return $this->postalCode;
     }
 
-    public function setPostalCode(?string $postalCode): self
+    public function setPostalCode(?string $postalCode): void
     {
         $this->postalCode = $postalCode;
-
-        return $this;
     }
 
     public function getCity(): ?string
@@ -59,11 +55,9 @@ class Place
         return $this->city;
     }
 
-    public function setCity(?string $city): self
+    public function setCity(?string $city): void
     {
         $this->city = $city;
-
-        return $this;
     }
 
     /**

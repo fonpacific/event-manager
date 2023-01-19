@@ -185,10 +185,8 @@ class Event
         return $this->place;
     }
 
-    public function setPlace(?Place $place): self
+    public function setPlace(?Place $place): void
     {
         $this->place = $place;
-
-        return $this;
     }
 }
