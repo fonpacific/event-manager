@@ -1,6 +1,6 @@
 {% macro default_card(event) %}
     <div class="card h-100">
-        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ event.name }}">
+        <img src="{{ asset('build/images/placeholder_small.png') }}" class="card-img-top" alt="{{ event.name }}">
         <div class="card-body">
             <h5 class="card-title">{{ event.name }}</h5>
             <p class="card-text">{{ _self.status_badge(event.status) }}</p>

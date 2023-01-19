@@ -27,6 +27,7 @@ class EventExtension extends AbstractExtension
             Event::STATUS_CANCELLED => 'Cancelled',
         };
     }
+
     public function eventStatusClass(string $status): string
     {
         return match ($status) {

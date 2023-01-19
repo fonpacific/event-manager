@@ -26,6 +26,7 @@ class Event
     public const STATUSES_AVAILABLE = [self::STATUS_PUBLISHED, self::STATUS_CANCELLED];
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Type('integer'),Assert\GreaterThan(0)]
     private ?int $maxAttendeesNumber = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
@@ -35,25 +36,31 @@ class Event
     private Collection $children;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank, Assert\Type('string')]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    #[Assert\Type('datetime')]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    #[Assert\Type('datetime'), Assert\GreaterThan(propertyPath: 'startDate')]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    #[Assert\Type('datetime')]
     private ?\DateTimeInterface $registrationStartDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    #[Assert\Type('datetime'), Assert\GreaterThan(propertyPath: 'registrationStartDate')]
     private ?\DateTimeInterface $registrationEndDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    #[Assert\Type('datetime')]
     private ?\DateTimeInterface $accessStartDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    #[Assert\Type('datetime'), Assert\GreaterThan(propertyPath: 'accessStartDate')]
     private ?\DateTimeInterface $accessEndDate = null;
 
     #[ORM\ManyToOne]
@@ -62,6 +69,7 @@ class Event
     public function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->status = self::STATUS_DRAFT;
     }
 
     public function getStartDate(): ?\DateTimeInterface

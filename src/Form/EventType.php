@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,36 +17,34 @@ class EventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
+            ->add('name', TextType::class)
             ->add('description')
             ->add('maxAttendeesNumber', IntegerType::class, [
                 'label' => 'Maximum number of participants'
             ])
-            ->add('status', ChoiceType::class, [
-                'choices'  => [
-                    'Draft' => 'draft',
-                    'Published' => 'published',
-                ],
-                'placeholder' => 'Select status',
-                'required' => false,
-            ])
             ->add('startDate', DateTimeType::class, [
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('endDate', DateTimeType::class, [
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('registrationStartDate', DateTimeType::class, [
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('registrationEndDate', DateTimeType::class, [
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('accessStartDate', DateTimeType::class, [
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('accessEndDate', DateTimeType::class, [
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('parent')
             ->add('place')

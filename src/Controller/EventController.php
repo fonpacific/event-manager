@@ -25,6 +25,10 @@ class EventController extends AbstractController
     public function new(Request $request, EventRepository $eventRepository): Response
     {
         $event = new Event();
+
+        $event->setStartDate(new \DateTime());
+        $event->setEndDate(new \DateTime());
+
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 
