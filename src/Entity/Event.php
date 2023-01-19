@@ -11,10 +11,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: EventRepository::class),ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 class Event
 {
     use TimeStampableTrait, IdentifiableTrait, NameTrait, DescriptionTrait;
@@ -65,6 +67,18 @@ class Event
 
     #[ORM\ManyToOne]
     private ?Place $place = null;
+
+    #[Vich\UploadableField(mapping: 'event_cover', fileNameProperty: 'coverImageName', originalName: 'coverImageOriginalName', size: 'coverImageSize')]
+    private ?File $coverImageFile = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $coverImageName = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $coverImageSize = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $coverImageOriginalName = null;
 
     public function __construct()
     {
@@ -197,4 +211,73 @@ class Event
     {
         $this->place = $place;
     }
+
+    /**
+     * @return File|null
+     */
+    public function getCoverImageFile(): ?File
+    {
+        return $this->coverImageFile;
+    }
+
+    /**
+     * @param File|null $coverImageFile
+     */
+    public function setCoverImageFile(?File $coverImageFile): void
+    {
+        $this->coverImageFile = $coverImageFile;
+        if (null !== $coverImageFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCoverImageName(): ?string
+    {
+        return $this->coverImageName;
+    }
+
+    /**
+     * @param string|null $coverImageName
+     */
+    public function setCoverImageName(?string $coverImageName): void
+    {
+        $this->coverImageName = $coverImageName;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCoverImageSize(): ?int
+    {
+        return $this->coverImageSize;
+    }
+
+    /**
+     * @param int|null $coverImageSize
+     */
+    public function setCoverImageSize(?int $coverImageSize): void
+    {
+        $this->coverImageSize = $coverImageSize;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCoverImageOriginalName(): ?string
+    {
+        return $this->coverImageOriginalName;
+    }
+
+    /**
+     * @param string|null $coverImageOriginalName
+     */
+    public function setCoverImageOriginalName(?string $coverImageOriginalName): void
+    {
+        $this->coverImageOriginalName = $coverImageOriginalName;
+    }
+
+
 }

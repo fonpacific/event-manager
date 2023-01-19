@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class EventType extends AbstractType
 {
@@ -48,6 +49,15 @@ class EventType extends AbstractType
             ])
             ->add('parent')
             ->add('place')
+            ->add('coverImageFile', VichImageType::class, [
+                'required' => false,
+                'allow_delete' => true,
+                'delete_label' => 'delete',
+                'download_label' => 'download',
+                'download_uri' => true,
+                'image_uri' => true,
+                'asset_helper' => true,
+            ])
         ;
     }
 

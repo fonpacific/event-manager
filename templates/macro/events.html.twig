@@ -1,6 +1,10 @@
 {% macro default_card(event) %}
     <div class="card h-100">
-        <img src="{{ asset('build/images/placeholder_small.png') }}" class="card-img-top" alt="{{ event.name }}">
+        {% if event.coverImageName %}
+            <img src="{{ vich_uploader_asset(event, 'coverImageFile') }}" class="card-img-top" alt="{{ event.name }}">
+        {% else %}
+            <img src="{{ asset('build/images/placeholder_small.png') }}" class="card-img-top" alt="{{ event.name }}">
+        {% endif %}
         <div class="card-body">
             <h5 class="card-title">{{ event.name }}</h5>
             <p class="card-text">{{ _self.status_badge(event.status) }}</p>
