@@ -1,0 +1,23 @@
+{% for type in ['alert.success', 'alert.error', 'alert.info', 'alert.warning'] %}
+    {% for flash in app.session.flashbag.get(type) %}
+        {% if 'alert.error' == type %}
+            {% set result = 'danger' %}
+        {% endif %}
+        {% if 'alert.warning' == type %}
+            {% set result = 'warning' %}
+        {% endif %}
+        {% if 'alert.info' == type %}
+            {% set result = 'info' %}
+        {% endif %}
+        <div class="alert alert-{{ result|default('success') }} alert-dismissible fade show">
+            <div class="d-flex align-items-center">
+                {% if flash.message is defined %}
+                    {{ flash.message|trans }}
+                {% else %}
+                    {{ flash|trans }}
+                {% endif %}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+        </div>
+    {% endfor %}
+{% endfor %}

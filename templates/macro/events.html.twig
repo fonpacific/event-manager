@@ -10,8 +10,18 @@
             <p class="card-text">{{ _self.status_badge(event.status) }}</p>
             <p class="card-text">{{ event.description }}</p>
             <p class="card-text">{{ event.startDate ? event.startDate|date('d-m-Y') : 'NA' }} -> {{ event.endDate ? event.endDate|date('d-m-Y') : 'NA' }}</p>
+            <div class="btn-group">
+                {% if is_granted("ROLE_USER") %}
+                    {% if event.canRegister(app.user) %}
+                        <a href="{{ path('app_event_register', {'id': event.id}) }}" class="btn btn-success">Register</a>
+                    {% endif %}
 
-            <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-primary">Details</a>
+                    {% if event.isRegistered(app.user) %}
+                        <a href="{{ path('app_event_unregister', {'id': event.id}) }}" class="btn btn-danger">UnRegister</a>
+                    {% endif %}
+                {% endif %}
+                <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-primary">Details</a>
+            </div>
         </div>
     </div>
 {% endmacro %}

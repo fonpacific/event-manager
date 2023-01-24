@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import "macro/events.html.twig" as event_macro %}
+{% import 'macro/user.html.twig' as user_macro %}
 
 {% block container_class %}container-fluid{% endblock %}
 
@@ -66,5 +67,17 @@
                 </table>
             </div>
         </div>
+    </div>
+
+    <div class="row my-3">
+        {% for registration in event.registrations %}
+            <div class="col-12 col-lg-1">
+                {{ user_macro.registration_card(registration) }}
+            </div>
+        {% else %}
+            <div class="col-12">
+                <p>No registrations here</p>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}

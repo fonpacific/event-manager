@@ -27,6 +27,57 @@ class Event
     public const STATUSES = [self::STATUS_CANCELLED, self::STATUS_DRAFT, self::STATUS_PUBLISHED];
     public const STATUSES_AVAILABLE = [self::STATUS_PUBLISHED, self::STATUS_CANCELLED];
 
+    public function canRegister(User $user): bool
+    {
+        if ($this->isRegistered($user))
+        {
+            return false;
+        }
+
+        if ($this->getMaxAttendeesNumber() !== null && $this->registrationCount() >= $this->getMaxAttendeesNumber())
+        {
+            return false;
+        }
+
+        $now = new \DateTime();
+        if (
+            ($this->getRegistrationStartDate() !== null && $now <= $this->getRegistrationStartDate()) ||
+            ($this->getRegistrationEndDate() !== null && $now >= $this->getRegistrationEndDate())
+        )
+        {
+            return false;
+        }
+
+        if ($this->status !== self::STATUS_PUBLISHED)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function registrationCount(): int
+    {
+        return $this->getRegisteredUsers()->count();
+    }
+
+    public function isRegistered(User $user): bool
+    {
+           return $this->getRegisteredUsers()->contains($user);
+    }
+
+    public function getRegisteredUsers(): Collection
+    {
+        $users = [];
+        foreach($this->registrations as $registration)
+        {
+            assert($registration instanceof Registration);
+            $users[] = $registration->getPlatformUser();
+        }
+
+        return new ArrayCollection($users);
+    }
+
     #[ORM\Column(nullable: true)]
     #[Assert\Type('integer'),Assert\GreaterThan(0)]
     private ?int $maxAttendeesNumber = null;
@@ -80,10 +131,14 @@ class Event
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $coverImageOriginalName = null;
 
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: Registration::class)]
+    private Collection $registrations;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
         $this->status = self::STATUS_DRAFT;
+        $this->registrations = new ArrayCollection();
     }
 
     public function getStartDate(): ?\DateTimeInterface
@@ -277,6 +332,36 @@ class Event
     public function setCoverImageOriginalName(?string $coverImageOriginalName): void
     {
         $this->coverImageOriginalName = $coverImageOriginalName;
+    }
+
+    /**
+     * @return Collection<int, Registration>
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): self
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations->add($registration);
+            $registration->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): self
+    {
+        if ($this->registrations->removeElement($registration)) {
+            // set the owning side to null (unless already changed)
+            if ($registration->getEvent() === $this) {
+                $registration->setEvent(null);
+            }
+        }
+
+        return $this;
     }
 
 

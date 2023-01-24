@@ -17,6 +17,7 @@
         {% include 'header.html.twig' %}
 
         <div class="{% block container_class %}container{% endblock %}">
+            {% include 'alerts.html.twig' %}
             {% block body %}{% endblock %}
         </div>
 

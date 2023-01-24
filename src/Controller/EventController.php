@@ -3,12 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\User;
+use App\EventManager;
+use App\Exception\UserIsAlreadyRegisteredToThisEventException;
 use App\Form\EventType;
 use App\Repository\EventRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class EventController extends AbstractController
 {
@@ -21,6 +25,7 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ORGANIZER')]
     #[Route('/event/new', name: 'app_event_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EventRepository $eventRepository): Response
     {
@@ -52,6 +57,7 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ORGANIZER')]
     #[Route('/event/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Event $event, EventRepository $eventRepository): Response
     {
@@ -78,5 +84,34 @@ class EventController extends AbstractController
         }
 
         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/event/{id}/register', name: 'app_event_register', methods: ['GET'])]
+    public function register(Event $event, EventManager $eventManager): Response
+    {
+        $user = $this->getUser();
+        assert($user instanceof User);
+
+        try {
+            $eventManager->register($event, $user);
+            $this->addFlash('alert.success', 'Registration successful!');
+        } catch (UserIsAlreadyRegisteredToThisEventException $e) {
+            $this->addFlash('alert.error', 'You are already registered to this event.');
+        }
+
+        return $this->redirectToRoute('app_event_show', ["id"=>$event->getId()], Response::HTTP_SEE_OTHER);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/event/{id}/unregister', name: 'app_event_unregister', methods: ['GET'])]
+    public function unregister(Event $event, EventManager $eventManager): Response
+    {
+        $user = $this->getUser();
+        assert($user instanceof User);
+
+        $eventManager->unregister($event, $user);
+
+        return $this->redirectToRoute('welcome', [], Response::HTTP_SEE_OTHER);
     }
 }
