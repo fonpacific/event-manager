@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,6 +18,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EventRepository extends ServiceEntityRepository
 {
+
+    public const EVENT_FILTER_ONLY_PAST = 0;
+    public const EVENT_FILTER_ONLY_FUTURE = 1;
+    public const EVENT_FILTER_ALL_TIME = 2;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Event::class);
@@ -41,18 +48,53 @@ class EventRepository extends ServiceEntityRepository
 
     public function findAvailable(): array
     {
-        $now = new \DateTime();
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.endDate >= :now')
-            ->andWhere('e.status IN (:statuses)')
-            ->setParameter('now', $now)
-            ->setParameter('statuses', Event::STATUSES_AVAILABLE)
-            ->orderBy('e.startDate', 'ASC')
+        return $this->findAvailableQB()
             ->getQuery()
             ->getResult()
         ;
     }
 
+    public function upcomingEventsForUser(User $user): array
+    {
+        return $this->findAvailableQB([Event::STATUS_PUBLISHED, Event::STATUS_CANCELLED])
+            ->leftJoin('e.registrations', 'r')
+            ->andWhere('r.platformUser = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function historyEventsForUser(User $user): array
+    {
+        return $this->findAvailableQB([Event::STATUS_PUBLISHED, Event::STATUS_CANCELLED], mode: self::EVENT_FILTER_ONLY_PAST)
+            ->leftJoin('e.registrations', 'r')
+            ->andWhere('r.platformUser = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    private function findAvailableQB(array $statuses = Event::STATUSES_AVAILABLE, int $mode = self::EVENT_FILTER_ONLY_FUTURE): QueryBuilder
+    {
+        $now = new \DateTime();
+        $qb = $this->createQueryBuilder('e');
+
+        if ($mode === self::EVENT_FILTER_ONLY_PAST) {
+            $qb ->andWhere('e.startDate <= :now')
+                ->setParameter('now', $now);
+        } elseif ($mode === self::EVENT_FILTER_ONLY_FUTURE) {
+            $qb ->andWhere('e.endDate >= :now')
+                ->setParameter('now', $now);
+        }
+
+        $qb
+            ->andWhere('e.status IN (:statuses)')
+            ->setParameter('statuses', $statuses)
+            ->orderBy('e.startDate', 'ASC');
+        return $qb;
+    }
 //    /**
 //     * @return Event[] Returns an array of Event objects
 //     */

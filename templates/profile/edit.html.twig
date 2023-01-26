@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% import "macro/events.html.twig" as event_macro %}
+
+{% block container_class %}container-fluid{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col">
+            {% include 'profile/sidebar.html.twig' %}
+        </div>
+
+        <div class="col-12 col-lg-10">
+            <h3>Edit profile</h3>
+            <div class="mt-4">
+                {{ form_start(form) }}
+                {{ form_row(form.firstName) }}
+                {{ form_row(form.lastName) }}
+                <button class="btn btn-success">Update</button>
+                {{ form_end(form, {'render_rest' : true}) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
