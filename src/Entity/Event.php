@@ -342,17 +342,15 @@ class Event
         return $this->registrations;
     }
 
-    public function addRegistration(Registration $registration): self
+    public function addRegistration(Registration $registration): void
     {
         if (!$this->registrations->contains($registration)) {
             $this->registrations->add($registration);
             $registration->setEvent($this);
         }
-
-        return $this;
     }
 
-    public function removeRegistration(Registration $registration): self
+    public function removeRegistration(Registration $registration): void
     {
         if ($this->registrations->removeElement($registration)) {
             // set the owning side to null (unless already changed)
@@ -360,9 +358,5 @@ class Event
                 $registration->setEvent(null);
             }
         }
-
-        return $this;
     }
-
-
 }

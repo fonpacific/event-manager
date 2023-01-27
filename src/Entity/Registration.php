@@ -20,33 +20,29 @@ class Registration
 
     #[ORM\ManyToOne(inversedBy: 'registrations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $platformUser = null;
+    private User $platformUser;
 
     #[ORM\ManyToOne(inversedBy: 'registrations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Event $event = null;
+    private Event $event;
 
-    public function getPlatformUser(): ?User
+    public function getPlatformUser(): User
     {
         return $this->platformUser;
     }
 
-    public function setPlatformUser(?User $platformUser): self
+    public function setPlatformUser(User $platformUser): void
     {
         $this->platformUser = $platformUser;
-
-        return $this;
     }
 
-    public function getEvent(): ?Event
+    public function getEvent(): Event
     {
         return $this->event;
     }
 
-    public function setEvent(?Event $event): self
+    public function setEvent(Event $event): void
     {
         $this->event = $event;
-
-        return $this;
     }
 }

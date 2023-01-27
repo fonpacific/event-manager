@@ -55,11 +55,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email): void
     {
         $this->email = $email;
-
-        return $this;
     }
 
     public function getUserIdentifier(): string
@@ -76,11 +74,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): self
+    public function setRoles(array $roles): void
     {
         $this->roles = $roles;
-
-        return $this;
     }
 
     public function getPassword(): string
@@ -88,11 +84,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password): void
     {
         $this->password = $password;
-
-        return $this;
     }
 
     public function eraseCredentials()
@@ -101,63 +95,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    /**
-     * @return Collection<int, Registration>
-     */
+    /** @return Collection<int, Registration> */
     public function getRegistrations(): Collection
     {
         return $this->registrations;
     }
 
-    public function addRegistration(Registration $registration): self
+    public function addRegistration(Registration $registration): void
     {
         if (!$this->registrations->contains($registration)) {
             $this->registrations->add($registration);
             $registration->setPlatformUser($this);
         }
-
-        return $this;
     }
 
-    public function removeRegistration(Registration $registration): self
+    public function removeRegistration(Registration $registration): void
     {
-        if ($this->registrations->removeElement($registration)) {
-            // set the owning side to null (unless already changed)
-            if ($registration->getPlatformUser() === $this) {
-                $registration->setPlatformUser(null);
-            }
-        }
-
-        return $this;
+        $this->registrations->removeElement($registration);
     }
 
-    /**
-     * @return string|null
-     */
     public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    /**
-     * @param string|null $firstName
-     */
     public function setFirstName(?string $firstName): void
     {
         $this->firstName = $firstName;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    /**
-     * @param string|null $lastName
-     */
     public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
@@ -168,12 +139,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->isVerified;
     }
 
-    public function setIsVerified(bool $isVerified): self
+    public function setIsVerified(bool $isVerified): void
     {
         $this->isVerified = $isVerified;
-
-        return $this;
     }
-
-
 }
