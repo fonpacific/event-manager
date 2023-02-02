@@ -9,3 +9,9 @@ vich_uploader:
             uri_prefix: /images/event_cover
             upload_destination: '%kernel.project_dir%/public/images/event_cover'
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+
+        user_avatar:
+            uri_prefix: /images/user_avatar
+            upload_destination: '%kernel.project_dir%/public/images/user_avatar'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+

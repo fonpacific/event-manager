@@ -49,7 +49,7 @@ class EventType extends AbstractType
             ])
             ->add('parent')
             ->add('place')
-                ->add('coverImageFile', VichImageType::class, [
+            ->add('coverImageFile', VichImageType::class, [
                 'required' => false,
                 'allow_delete' => true,
                 'delete_label' => 'delete',
