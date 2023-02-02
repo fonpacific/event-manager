@@ -33,7 +33,7 @@ class ProfileController extends AbstractController
         $form = $this->createForm(ProfileType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && !$request->isXmlHttpRequest()) {
             $userRepository->save($user, true);
 
             $this->addFlash('alert.success', 'Profile updated!');

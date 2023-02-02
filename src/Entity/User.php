@@ -60,6 +60,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $avatarImageOriginalName = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Assert\NotNull(groups: ['edit'])]
+    private ?Country $country = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Province $province = null;
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
@@ -223,6 +232,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->avatarImageOriginalName = $avatarImageOriginalName;
     }
 
+    /**
+     * @return Country|null
+     */
+    public function getCountry(): ?Country
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param Country|null $country
+     */
+    public function setCountry(?Country $country): void
+    {
+        $this->country = $country;
+    }
+
+    /**
+     * @return Province|null
+     */
+    public function getProvince(): ?Province
+    {
+        return $this->province;
+    }
+
+    /**
+     * @param Province|null $province
+     */
+    public function setProvince(?Province $province): void
+    {
+        $this->province = $province;
+    }
 
 
 }

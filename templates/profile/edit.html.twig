@@ -16,10 +16,30 @@
                 {{ form_row(form.firstName) }}
                 {{ form_row(form.lastName) }}
                 {{ form_row(form.avatarImageFile) }}
+                {{ form_row(form.country) }}
+                {{ form_row(form.province) }}
                 <button class="btn btn-success">Update</button>
                 {{ form_end(form, {'render_rest' : true}) }}
             </div>
         </div>
     </div>
 
+    <script type="text/javascript">
+        var $country = $('#profile_country');
+        $country.change(function() {
+          var $form = $(this).closest('form');
+          var data = {};
+          data[$country.attr('name')] = $country.val();
+          $.ajax({
+            url : $form.attr('action'),
+            type: $form.attr('method'),
+            data : data,
+            complete: function(html) {
+              $('#profile_province').replaceWith(
+                $(html.responseText).find('#profile_province')
+              );
+            }
+          });
+        });
+    </script>
 {% endblock %}
