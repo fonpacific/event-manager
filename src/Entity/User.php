@@ -67,6 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
+    #[Assert\NotNull(groups: ['edit'])]
     private ?Province $province = null;
 
     public function __construct()
