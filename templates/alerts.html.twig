@@ -21,3 +21,16 @@
         </div>
     {% endfor %}
 {% endfor %}
+
+{% for flash in app.session.flashbag.get('alert.profile_complete') %}
+    <div class="alert alert-danger alert-dismissible fade show">
+        <div class="d-flex align-items-center">
+            {% if flash.message is defined %}
+                {{ flash.message|trans }}
+            {% else %}
+                {{ flash|trans }}
+            {% endif %} &nbsp;<a href="{{ path('app_profile_dashboard') }}">CLICCA QUI PER ANDARE AL PROFILO</a>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+    </div>
+{% endfor %}
