@@ -47,4 +47,32 @@ class AppFixtures extends Fixture
 
         $manager->flush();
     }
+
+    public static function getRandomEntity(ObjectManager $manager, string $fqdn, int $probabilityToNull = 100): mixed
+    {
+        $dice = rand(0, 100);
+        if ($dice > $probabilityToNull) {
+            return null;
+        }
+
+        $qb = $manager->createQueryBuilder()
+            ->select('COUNT(q)')
+            ->from($fqdn, 'q');
+
+        $totalRecords = $qb->getQuery()->getSingleScalarResult();
+
+        if ($totalRecords < 1) {
+            return null;
+        }
+
+        $rowToFetch = rand(0, $totalRecords - 1);
+
+        $qb
+            ->select('p')
+            ->from($fqdn, 'p')
+            ->setMaxResults(1)
+            ->setFirstResult($rowToFetch);
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }
