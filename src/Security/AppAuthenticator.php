@@ -2,6 +2,9 @@
 
 namespace App\Security;
 
+use App\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +25,7 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_login';
     public const WELCOME_ROUTE = 'welcome';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    public function __construct(private UrlGeneratorInterface $urlGenerator, private Security $security, private EntityManagerInterface $entityManager)
     {
     }
 
@@ -58,5 +61,28 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
+    }
+
+    /** @return array|User[] */
+    public function getImpersonableUsers(): array
+    {
+        if (! $this->security->isGranted('ROLE_ALLOWED_TO_SWITCH')) {
+            return [];
+        }
+
+        $user = $this->security->getUser();
+        if ($user === null) {
+            return [];
+        }
+
+        assert($user instanceof User);
+
+        /** @var User[] $users */
+        $users = $this->entityManager->getRepository(User::class)->findBy([]);
+        $collection = new ArrayCollection($users);
+
+        return $collection
+            ->filter(static fn (User $collectionUser) => $user->getId() !== $collectionUser->getId())
+            ->toArray();
     }
 }

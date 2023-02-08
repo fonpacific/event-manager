@@ -25,6 +25,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimeStampableTrait, IdentifiableTrait;
 
+    public function __toString(): string
+    {
+        return $this->firstName && $this->lastName ? $this->firstName.' '.$this->lastName : $this->email;
+    }
+
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 

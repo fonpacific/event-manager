@@ -15,6 +15,7 @@
                     src="https://code.jquery.com/jquery-3.6.3.min.js"
                     integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
                     crossorigin="anonymous"></script>
+
         {% endblock %}
     </head>
     <body>
@@ -26,5 +27,18 @@
         </div>
 
         {% include 'footer.html.twig' %}
+        <script>
+            // IMPERSONATE MANAGEMENT
+            var selector = document.getElementById('impersonate');
+            if(null !== selector)
+            {
+                selector.addEventListener('change', function() {
+                    var strUser = this.options[this.selectedIndex].dataset.username;
+
+                    window.location.href = "{{ path(app.request.attributes.get('_route'),
+            app.request.attributes.get('_route_params')) }}?_switch_user="+strUser;
+                });
+            }
+        </script>
     </body>
 </html>
