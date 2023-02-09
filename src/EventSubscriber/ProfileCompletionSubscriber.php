@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProfileCompletionSubscriber implements EventSubscriberInterface
@@ -16,7 +17,8 @@ class ProfileCompletionSubscriber implements EventSubscriberInterface
     public function __construct(
         private TokenStorageInterface $tokenStorage,
         private ValidatorInterface $validator,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private Security $security
     )
     {
 
@@ -47,7 +49,7 @@ class ProfileCompletionSubscriber implements EventSubscriberInterface
 
         $errors = $this->validator->validate(value: $user, groups: ['Default','edit']);
 
-        if(count($errors) === 0) {
+        if(count($errors) === 0 || $this->security->isGranted('ROLE_ADMIN', $user)) {
             return;
         }
 

@@ -10,6 +10,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.13",
+        "easycorp/easyadmin-bundle": "^4.5",
         "fakerphp/faker": "^1.21",
         "phpoffice/phpspreadsheet": "^1.27",
         "sensio/framework-extra-bundle": "^6.2",

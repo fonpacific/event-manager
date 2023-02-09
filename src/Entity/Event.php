@@ -93,11 +93,11 @@ class Event
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    #[Assert\Type('datetime')]
+    #[Assert\Type('datetime'), Assert\NotNull]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    #[Assert\Type('datetime'), Assert\GreaterThan(propertyPath: 'startDate')]
+    #[Assert\Type('datetime'), Assert\NotNull, Assert\GreaterThan(propertyPath: 'startDate')]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
