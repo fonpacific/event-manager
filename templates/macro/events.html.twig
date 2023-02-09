@@ -20,7 +20,7 @@
                         <a href="{{ path('app_event_unregister', {'id': event.id}) }}" class="btn btn-danger">UnRegister</a>
                     {% endif %}
                 {% endif %}
-                <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-primary">Details</a>
+                <a href="{{ path('app_event_show', {'slug': event.slug}) }}" class="btn btn-primary">Details</a>
             </div>
         </div>
     </div>

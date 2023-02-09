@@ -20,7 +20,7 @@ class EventManager
     /**
      * @throws UserIsAlreadyRegisteredToThisEventException
      */
-    public function register(Event $event, User $user): void
+    public function register(Event $event, User $user, bool $andFlush = true): void
     {
         $registration = $this->findRegistration($event, $user);
 
@@ -36,7 +36,10 @@ class EventManager
         $registration = new Registration($event, $user);
 
         $this->entityManager->persist($registration);
-        $this->entityManager->flush();
+        if($andFlush === true)
+        {
+            $this->entityManager->flush();
+        }
     }
 
     public function unregister(Event $event, User $user): void
