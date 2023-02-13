@@ -8,7 +8,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 trait NameTrait
 {
-
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank, Assert\Type('string'), Assert\Length(min: 5, max: 255)]
     private ?string $name = null;
@@ -32,9 +31,6 @@ trait NameTrait
         $this->slug = Slugger::slug($name);
     }
 
-    /**
-     * @return string|null
-     */
     public function getSlug(): ?string
     {
         return $this->slug;

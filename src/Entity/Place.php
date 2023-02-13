@@ -60,21 +60,13 @@ class Place
         $this->city = $city;
     }
 
-    /**
-     * @return GeoCoordinates
-     */
     public function getCoordinates(): GeoCoordinates
     {
         return $this->coordinates;
     }
 
-    /**
-     * @param GeoCoordinates $coordinates
-     */
     public function setCoordinates(GeoCoordinates $coordinates): void
     {
         $this->coordinates = $coordinates;
     }
-
-
 }

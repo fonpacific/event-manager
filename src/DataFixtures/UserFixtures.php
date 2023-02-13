@@ -14,7 +14,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
-
     private const NUMBER_OF_USERS_FAKER = 200;
     private const NUMBER_OF_ORGANIZERS_FAKER = 5;
     private const USER_DEFAULT_PASSWORD = 'testPwd666';
@@ -23,9 +22,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
     public function __construct(
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly EventManager $eventManager
-    )
-    {
-    }
+    ) {}
 
     public function load(ObjectManager $manager)
     {
@@ -41,6 +38,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $manager->persist($user);
         }
 
+        $organizers = [];
+
         for ($i = 1; $i <= self::NUMBER_OF_ORGANIZERS_FAKER; $i++) {
             $user = new User();
             $user->setEmail($faker->email());
@@ -50,16 +49,18 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             ));
             $user->setRoles(['ROLE_ORGANIZER']);
             $manager->persist($user);
+            $organizers[] = $user;
         }
 
-        $user = new User();
-        $user->setEmail('admin@eventmanager.com');
-        $user->setPassword($this->userPasswordHasher->hashPassword(
-            $user,
+        $adminUser = new User();
+        $adminUser->setEmail('admin@eventmanager.com');
+        $adminUser->setPassword($this->userPasswordHasher->hashPassword(
+            $adminUser,
             '4dmin123'
         ));
-        $user->setRoles(['ROLE_SUPER_ADMIN']);
-        $manager->persist($user);
+        $adminUser->setRoles(['ROLE_SUPER_ADMIN']);
+        $manager->persist($adminUser);
+        $organizers[] = $adminUser;
 
         $manager->flush();
 

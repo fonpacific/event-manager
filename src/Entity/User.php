@@ -174,101 +174,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isVerified = $isVerified;
     }
 
-    /**
-     * @return File|null
-     */
     public function getAvatarImageFile(): ?File
     {
         return $this->avatarImageFile;
     }
 
-    /**
-     * @param File|null $avatarImageFile
-     */
     public function setAvatarImageFile(?File $avatarImageFile): void
     {
         $this->avatarImageFile = $avatarImageFile;
     }
 
-    /**
-     * @return string|null
-     */
     public function getAvatarImageName(): ?string
     {
         return $this->avatarImageName;
     }
 
-    /**
-     * @param string|null $avatarImageName
-     */
     public function setAvatarImageName(?string $avatarImageName): void
     {
         $this->avatarImageName = $avatarImageName;
     }
 
-    /**
-     * @return int|null
-     */
     public function getAvatarImageSize(): ?int
     {
         return $this->avatarImageSize;
     }
 
-    /**
-     * @param int|null $avatarImageSize
-     */
     public function setAvatarImageSize(?int $avatarImageSize): void
     {
         $this->avatarImageSize = $avatarImageSize;
     }
 
-    /**
-     * @return string|null
-     */
     public function getAvatarImageOriginalName(): ?string
     {
         return $this->avatarImageOriginalName;
     }
 
-    /**
-     * @param string|null $avatarImageOriginalName
-     */
     public function setAvatarImageOriginalName(?string $avatarImageOriginalName): void
     {
         $this->avatarImageOriginalName = $avatarImageOriginalName;
     }
 
-    /**
-     * @return Country|null
-     */
     public function getCountry(): ?Country
     {
         return $this->country;
     }
 
-    /**
-     * @param Country|null $country
-     */
     public function setCountry(?Country $country): void
     {
         $this->country = $country;
     }
 
-    /**
-     * @return Province|null
-     */
     public function getProvince(): ?Province
     {
         return $this->province;
     }
 
-    /**
-     * @param Province|null $province
-     */
     public function setProvince(?Province $province): void
     {
         $this->province = $province;
     }
-
-
 }

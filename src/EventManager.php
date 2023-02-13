@@ -17,9 +17,7 @@ class EventManager
 
     }
 
-    /**
-     * @throws UserIsAlreadyRegisteredToThisEventException
-     */
+    /** @throws UserIsAlreadyRegisteredToThisEventException */
     public function register(Event $event, User $user, bool $andFlush = true): void
     {
         $registration = $this->findRegistration($event, $user);

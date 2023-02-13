@@ -8,9 +8,7 @@ use Twig\TwigFilter;
 
 class EventExtension extends AbstractExtension
 {
-    /**
-     * @return TwigFilter[]
-     */
+    /** @return TwigFilter[] */
     public function getFilters(): array
     {
         return [

@@ -181,9 +181,7 @@ class Event
         $this->parent = $parent;
     }
 
-    /**
-     * @return Collection<int, self>
-     */
+    /** @return Collection<int, self> */
     public function getChildren(): Collection
     {
         return $this->children;
@@ -267,17 +265,11 @@ class Event
         $this->place = $place;
     }
 
-    /**
-     * @return File|null
-     */
     public function getCoverImageFile(): ?File
     {
         return $this->coverImageFile;
     }
 
-    /**
-     * @param File|null $coverImageFile
-     */
     public function setCoverImageFile(?File $coverImageFile): void
     {
         $this->coverImageFile = $coverImageFile;
@@ -286,57 +278,37 @@ class Event
         }
     }
 
-    /**
-     * @return string|null
-     */
     public function getCoverImageName(): ?string
     {
         return $this->coverImageName;
     }
 
-    /**
-     * @param string|null $coverImageName
-     */
     public function setCoverImageName(?string $coverImageName): void
     {
         $this->coverImageName = $coverImageName;
     }
 
-    /**
-     * @return int|null
-     */
     public function getCoverImageSize(): ?int
     {
         return $this->coverImageSize;
     }
 
-    /**
-     * @param int|null $coverImageSize
-     */
     public function setCoverImageSize(?int $coverImageSize): void
     {
         $this->coverImageSize = $coverImageSize;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCoverImageOriginalName(): ?string
     {
         return $this->coverImageOriginalName;
     }
 
-    /**
-     * @param string|null $coverImageOriginalName
-     */
     public function setCoverImageOriginalName(?string $coverImageOriginalName): void
     {
         $this->coverImageOriginalName = $coverImageOriginalName;
     }
 
-    /**
-     * @return Collection<int, Registration>
-     */
+    /** @return Collection<int, Registration> */
     public function getRegistrations(): Collection
     {
         return $this->registrations;

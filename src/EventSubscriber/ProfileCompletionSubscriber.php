@@ -13,16 +13,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProfileCompletionSubscriber implements EventSubscriberInterface
 {
-
     public function __construct(
         private TokenStorageInterface $tokenStorage,
         private ValidatorInterface $validator,
         private RequestStack $requestStack,
         private Security $security
-    )
-    {
-
-    }
+    ) {}
 
     public static function getSubscribedEvents(): array
     {
@@ -61,5 +57,4 @@ class ProfileCompletionSubscriber implements EventSubscriberInterface
             $session->getFlashBag()->add('alert.profile_complete', 'HEI!!! COMPLETA IL PROFILO!!!');
         }
     }
-
 }

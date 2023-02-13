@@ -39,9 +39,7 @@ class Country
         $this->code = $code;
     }
 
-    /**
-     * @return Collection<int, Province>
-     */
+    /** @return Collection<int, Province> */
     public function getProvinces(): Collection
     {
         return $this->provinces;

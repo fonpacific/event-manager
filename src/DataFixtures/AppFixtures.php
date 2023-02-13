@@ -41,10 +41,6 @@ class AppFixtures extends Fixture
             $manager->persist($place);
         }
 
-
-        // $product = new Product();
-        // $manager->persist($product);
-
         $manager->flush();
     }
 

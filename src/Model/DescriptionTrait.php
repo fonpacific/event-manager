@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait DescriptionTrait
 {
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
@@ -20,5 +19,4 @@ trait DescriptionTrait
     {
         $this->description = $description;
     }
-
 }
