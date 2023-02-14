@@ -144,6 +144,9 @@ class Event
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Registration::class)]
     private Collection $registrations;
 
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    private ?User $organizer = null;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -340,5 +343,17 @@ class Event
                 $registration->setEvent(null);
             }
         }
+    }
+
+    public function getOrganizer(): ?User
+    {
+        return $this->organizer;
+    }
+
+    public function setOrganizer(?User $organizer): self
+    {
+        $this->organizer = $organizer;
+
+        return $this;
     }
 }

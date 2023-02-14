@@ -19,7 +19,9 @@
                 <div class="col">
                     <div class="btn-group" role="group">
                         <a href="{{ path('app_event_index') }}" class="btn btn-secondary">Back to list</a>
-                        <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn btn-warning">Edit</a>
+                        {% if is_granted('edit', event) %}
+                            <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn btn-warning">Edit</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -27,6 +29,11 @@
             <div class="table-responsive">
                 <table class="table table-sm table-striped">
                     <tbody>
+
+                        <tr>
+                            <th>Organizer</th>
+                            <td>{{ event.organizer }}</td>
+                        </tr>
 
                         <tr>
                             <th>CreatedAt</th>

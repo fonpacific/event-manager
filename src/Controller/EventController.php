@@ -64,6 +64,8 @@ class EventController extends AbstractController
     #[Route('/event/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Event $event, EventRepository $eventRepository): Response
     {
+        $this->denyAccessUnlessGranted('edit', $event);
+
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 

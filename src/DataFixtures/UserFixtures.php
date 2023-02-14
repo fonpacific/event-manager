@@ -66,7 +66,9 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         $events = $manager->getRepository(Event::class)->findAll();
         foreach ($events as $event) {
+            assert($event instanceof Event);
             $randomUsers = rand(0, self::USER_MAX_RANDOM_NUMBER);
+            $event->setOrganizer($organizers[rand(0, count($organizers) - 1)]);
             for ($i = 0; $i < $randomUsers; $i++) {
                 $user = AppFixtures::getRandomEntity($manager, User::class);
                 try {

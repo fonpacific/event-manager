@@ -75,9 +75,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotNull(groups: ['edit'])]
     private ?Province $province = null;
 
+    #[ORM\OneToMany(mappedBy: 'organizer', targetEntity: Event::class)]
+    private Collection $events;
+
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->roles);
+    }
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     public function getEmail(): ?string
@@ -232,5 +241,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProvince(?Province $province): void
     {
         $this->province = $province;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): self
+    {
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->setOrganizer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): self
+    {
+        if ($this->events->removeElement($event)) {
+            // set the owning side to null (unless already changed)
+            if ($event->getOrganizer() === $this) {
+                $event->setOrganizer(null);
+            }
+        }
+
+        return $this;
     }
 }
