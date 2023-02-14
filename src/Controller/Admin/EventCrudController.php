@@ -14,9 +14,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class EventCrudController extends AbstractCrudController
@@ -34,7 +36,7 @@ class EventCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         $crud->showEntityActionsInlined(true);
-
+        $crud->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig');
         return $crud;
     }
 
@@ -52,6 +54,8 @@ class EventCrudController extends AbstractCrudController
             Event::STATUS_DRAFT => 'warning',
             Event::STATUS_CANCELLED => 'danger',
         ]);
+        $description = TextareaField::new('description', 'Descrizione')->setFormType(CKEditorType::class)
+        ->setFormTypeOption('config', array('toolbar' => 'standard'));
         $createdAt = DateTimeField::new('createdAt', 'Creazione')->setFormat('dd-MM-YY HH:mm');
         $updatedAt = DateTimeField::new('updatedAt', 'Ultima modifica')->setFormat('dd-MM-YY HH:mm');
         $startDate = DateTimeField::new('startDate', 'Inizio Evento')->setFormat('dd-MM-YY HH:mm');
@@ -62,15 +66,15 @@ class EventCrudController extends AbstractCrudController
         }
 
         if ($pageName === Crud::PAGE_DETAIL) {
-            return [$id, $name, $status, $startDate, $endDate, $createdAt, $updatedAt];
+            return [$id, $name, $status, $startDate, $endDate,$description, $createdAt, $updatedAt];
         }
 
         if ($pageName === Crud::PAGE_NEW) {
-            return [$name, $status, $startDate, $endDate];
+            return [$name, $status, $startDate, $endDate, $description];
         }
 
         if ($pageName === Crud::PAGE_EDIT) {
-            return [$name, $status, $startDate, $endDate];
+            return [$name, $status, $startDate, $endDate, $description];
         }
     }
 

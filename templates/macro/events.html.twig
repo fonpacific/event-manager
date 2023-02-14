@@ -8,7 +8,7 @@
         <div class="card-body">
             <h5 class="card-title">{{ event.name }}</h5>
             <p class="card-text">{{ _self.status_badge(event.status) }}</p>
-            <p class="card-text">{{ event.description }}</p>
+            <p class="card-text">{{ event.description|raw }}</p>
             <p class="card-text">{{ event.startDate ? event.startDate|date('d-m-Y') : 'NA' }} -> {{ event.endDate ? event.endDate|date('d-m-Y') : 'NA' }}</p>
             <div class="btn-group">
                 {% if is_granted("ROLE_USER") %}

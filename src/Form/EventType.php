@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Event;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -19,7 +20,9 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('description')
+            ->add('description', CKEditorType::class, [
+                'config' => array('toolbar' => 'standard'),
+            ])
             ->add('maxAttendeesNumber', IntegerType::class, [
                 'label' => 'Maximum number of participants'
             ])
