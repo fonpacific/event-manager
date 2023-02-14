@@ -7,11 +7,13 @@ use App\Entity\User;
 use App\EventManager;
 use App\Exception\UserIsAlreadyRegisteredToThisEventException;
 use App\Form\EventType;
+use App\Message\UserRegisteredToAnEvent;
 use App\Repository\EventRepository;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -89,10 +91,11 @@ class EventController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/event/{id}/register', name: 'app_event_register', methods: ['GET'])]
-    public function register(Event $event, EventManager $eventManager): Response
+    public function register(Event $event, EventManager $eventManager, MessageBusInterface $messageBus): Response
     {
         $user = $this->getUser();
         assert($user instanceof User);
+        $messageBus->dispatch(new UserRegisteredToAnEvent($user->getId(), $event->getId()));
 
         try {
             $eventManager->register($event, $user);
@@ -101,7 +104,7 @@ class EventController extends AbstractController
             $this->addFlash('alert.error', 'You are already registered to this event.');
         }
 
-        return $this->redirectToRoute('app_event_show', ["id"=>$event->getId()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_event_show', ["slug"=>$event->getSlug()], Response::HTTP_SEE_OTHER);
     }
 
     #[IsGranted('ROLE_USER')]
