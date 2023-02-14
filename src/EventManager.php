@@ -12,9 +12,14 @@ class EventManager
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
-    public function approve(Event $event): void
+    public function approve(Event $event, bool $andFlush = true): void
     {
+        $event->approve();
 
+        if($andFlush === true)
+        {
+            $this->entityManager->flush();
+        }
     }
 
     /** @throws UserIsAlreadyRegisteredToThisEventException */

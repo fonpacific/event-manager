@@ -20,8 +20,6 @@ final class Version20230209084843 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP SEQUENCE messenger_messages_id_seq CASCADE');
-        $this->addSql('DROP TABLE messenger_messages');
         $this->addSql('ALTER TABLE country ADD slug VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE event ADD slug VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE place ADD slug VARCHAR(255) DEFAULT NULL');

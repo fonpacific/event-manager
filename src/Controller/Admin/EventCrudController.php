@@ -3,8 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Event;
+use App\EventManager;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -12,24 +16,27 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class EventCrudController extends AbstractCrudController
 {
+    public function __construct(private EventManager $eventManager)
+    {
+
+    }
+
     public static function getEntityFqcn(): string
     {
         return Event::class;
     }
 
-    /*
-    public function configureFields(string $pageName): iterable
+    public function configureCrud(Crud $crud): Crud
     {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
+        $crud->showEntityActionsInlined(true);
+
+        return $crud;
     }
-    */
 
     /** @return iterable|array<int,FieldInterface> */
     public function configureFields(string $pageName): iterable
@@ -65,6 +72,32 @@ class EventCrudController extends AbstractCrudController
         if ($pageName === Crud::PAGE_EDIT) {
             return [$name, $status, $startDate, $endDate];
         }
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $approveEvent = Action::new('approveEvent', 'Approva')
+            ->displayIf(static function ($entity) {
+                return $entity->getStatus() === Event::STATUS_DRAFT;
+            })
+            ->linkToCrudAction('approveEvent')
+            ->setHtmlAttributes(['title' => 'Approva Evento']);
+
+        return $actions
+            ->add(Crud::PAGE_INDEX, $approveEvent);
+    }
+
+    public function approveEvent(AdminContext $context): RedirectResponse
+    {
+        $event = $context->getEntity()->getInstance();
+
+        $this->eventManager->approve($event);
+
+       $url = empty($context->getReferrer())
+           ? $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl()
+           : $context->getReferrer();
+
+       return $this->redirect($url);
     }
 
     public function configureFilters(Filters $filters): Filters

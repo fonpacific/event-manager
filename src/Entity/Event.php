@@ -78,6 +78,16 @@ class Event
         return new ArrayCollection($users);
     }
 
+    public function approve(): void
+    {
+        if($this->status !== self::STATUS_DRAFT)
+        {
+            return;
+        }
+
+        $this->status = self::STATUS_PUBLISHED;
+    }
+
     #[ORM\Column(nullable: true)]
     #[Assert\Type('integer'),Assert\GreaterThan(0)]
     private ?int $maxAttendeesNumber = null;
