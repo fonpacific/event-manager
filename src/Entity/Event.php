@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Model\DescriptionTrait;
@@ -7,20 +9,27 @@ use App\Model\IdentifiableTrait;
 use App\Model\NameTrait;
 use App\Model\TimeStampableTrait;
 use App\Repository\EventRepository;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use PHPStan\Type\IntegerType;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+use function assert;
 
 #[ORM\Entity(repositoryClass: EventRepository::class),ORM\HasLifecycleCallbacks]
 #[Vich\Uploadable]
 class Event
 {
-    use TimeStampableTrait, IdentifiableTrait, NameTrait, DescriptionTrait;
+    use TimeStampableTrait;
+    use IdentifiableTrait;
+    use NameTrait;
+    use DescriptionTrait;
 
     public const STATUS_DRAFT = 'draft';
     public const STATUS_PUBLISHED = 'published';
@@ -30,31 +39,23 @@ class Event
 
     public function canRegister(User $user): bool
     {
-        if ($this->isRegistered($user))
-        {
+        if ($this->isRegistered($user)) {
             return false;
         }
 
-        if ($this->getMaxAttendeesNumber() !== null && $this->registrationCount() >= $this->getMaxAttendeesNumber())
-        {
+        if ($this->getMaxAttendeesNumber() !== null && $this->registrationCount() >= $this->getMaxAttendeesNumber()) {
             return false;
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
         if (
             ($this->getRegistrationStartDate() !== null && $now <= $this->getRegistrationStartDate()) ||
             ($this->getRegistrationEndDate() !== null && $now >= $this->getRegistrationEndDate())
-        )
-        {
+        ) {
             return false;
         }
 
-        if ($this->status !== self::STATUS_PUBLISHED)
-        {
-            return false;
-        }
-
-        return true;
+        return $this->status === self::STATUS_PUBLISHED;
     }
 
     public function registrationCount(): int
@@ -70,8 +71,7 @@ class Event
     public function getRegisteredUsers(): Collection
     {
         $users = [];
-        foreach($this->registrations as $registration)
-        {
+        foreach ($this->registrations as $registration) {
             assert($registration instanceof Registration);
             $users[] = $registration->getPlatformUser();
         }
@@ -81,8 +81,7 @@ class Event
 
     public function approve(): void
     {
-        if($this->status !== self::STATUS_DRAFT)
-        {
+        if ($this->status !== self::STATUS_DRAFT) {
             return;
         }
 
@@ -105,27 +104,27 @@ class Event
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
     #[Assert\Type('datetime'), Assert\NotNull]
-    private ?\DateTimeInterface $startDate = null;
+    private ?DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
     #[Assert\Type('datetime'), Assert\NotNull, Assert\GreaterThan(propertyPath: 'startDate')]
-    private ?\DateTimeInterface $endDate = null;
+    private ?DateTimeInterface $endDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     #[Assert\Type('datetime')]
-    private ?\DateTimeInterface $registrationStartDate = null;
+    private ?DateTimeInterface $registrationStartDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     #[Assert\Type('datetime'), Assert\GreaterThan(propertyPath: 'registrationStartDate')]
-    private ?\DateTimeInterface $registrationEndDate = null;
+    private ?DateTimeInterface $registrationEndDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     #[Assert\Type('datetime')]
-    private ?\DateTimeInterface $accessStartDate = null;
+    private ?DateTimeInterface $accessStartDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     #[Assert\Type('datetime'), Assert\GreaterThan(propertyPath: 'accessStartDate')]
-    private ?\DateTimeInterface $accessEndDate = null;
+    private ?DateTimeInterface $accessEndDate = null;
 
     #[ORM\ManyToOne]
     private ?Place $place = null;
@@ -155,22 +154,22 @@ class Event
         $this->registrations = new ArrayCollection();
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function getStartDate(): ?DateTimeInterface
     {
         return $this->startDate;
     }
 
-    public function setStartDate(\DateTimeInterface $startDate): void
+    public function setStartDate(DateTimeInterface $startDate): void
     {
         $this->startDate = $startDate;
     }
 
-    public function getEndDate(): ?\DateTimeInterface
+    public function getEndDate(): ?DateTimeInterface
     {
         return $this->endDate;
     }
 
-    public function setEndDate(\DateTimeInterface $endDate): void
+    public function setEndDate(DateTimeInterface $endDate): void
     {
         $this->endDate = $endDate;
     }
@@ -203,20 +202,26 @@ class Event
 
     public function addChild(self $child): void
     {
-        if (!$this->children->contains($child)) {
-            $this->children->add($child);
-            $child->setParent($this);
+        if ($this->children->contains($child)) {
+            return;
         }
+
+        $this->children->add($child);
+        $child->setParent($this);
     }
 
     public function removeChild(self $child): void
     {
-        if ($this->children->removeElement($child)) {
-            // set the owning side to null (unless already changed)
-            if ($child->getParent() === $this) {
-                $child->setParent(null);
-            }
+        if (! $this->children->removeElement($child)) {
+            return;
         }
+
+        // set the owning side to null (unless already changed)
+        if ($child->getParent() !== $this) {
+            return;
+        }
+
+        $child->setParent(null);
     }
 
     public function getStatus(): ?string
@@ -229,42 +234,42 @@ class Event
         $this->status = $status;
     }
 
-    public function getRegistrationStartDate(): ?\DateTimeInterface
+    public function getRegistrationStartDate(): ?DateTimeInterface
     {
         return $this->registrationStartDate;
     }
 
-    public function setRegistrationStartDate(?\DateTimeInterface $registrationStartDate): void
+    public function setRegistrationStartDate(?DateTimeInterface $registrationStartDate): void
     {
         $this->registrationStartDate = $registrationStartDate;
     }
 
-    public function getRegistrationEndDate(): ?\DateTimeInterface
+    public function getRegistrationEndDate(): ?DateTimeInterface
     {
         return $this->registrationEndDate;
     }
 
-    public function setRegistrationEndDate(?\DateTimeInterface $registrationEndDate): void
+    public function setRegistrationEndDate(?DateTimeInterface $registrationEndDate): void
     {
         $this->registrationEndDate = $registrationEndDate;
     }
 
-    public function getAccessStartDate(): ?\DateTimeInterface
+    public function getAccessStartDate(): ?DateTimeInterface
     {
         return $this->accessStartDate;
     }
 
-    public function setAccessStartDate(?\DateTimeInterface $accessStartDate): void
+    public function setAccessStartDate(?DateTimeInterface $accessStartDate): void
     {
         $this->accessStartDate = $accessStartDate;
     }
 
-    public function getAccessEndDate(): ?\DateTimeInterface
+    public function getAccessEndDate(): ?DateTimeInterface
     {
         return $this->accessEndDate;
     }
 
-    public function setAccessEndDate(?\DateTimeInterface $accessEndDate): void
+    public function setAccessEndDate(?DateTimeInterface $accessEndDate): void
     {
         $this->accessEndDate = $accessEndDate;
     }
@@ -287,9 +292,11 @@ class Event
     public function setCoverImageFile(?File $coverImageFile): void
     {
         $this->coverImageFile = $coverImageFile;
-        if (null !== $coverImageFile) {
-            $this->updatedAt = new \DateTimeImmutable();
+        if ($coverImageFile === null) {
+            return;
         }
+
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function getCoverImageName(): ?string
@@ -330,20 +337,26 @@ class Event
 
     public function addRegistration(Registration $registration): void
     {
-        if (!$this->registrations->contains($registration)) {
-            $this->registrations->add($registration);
-            $registration->setEvent($this);
+        if ($this->registrations->contains($registration)) {
+            return;
         }
+
+        $this->registrations->add($registration);
+        $registration->setEvent($this);
     }
 
     public function removeRegistration(Registration $registration): void
     {
-        if ($this->registrations->removeElement($registration)) {
-            // set the owning side to null (unless already changed)
-            if ($registration->getEvent() === $this) {
-                $registration->setEvent(null);
-            }
+        if (! $this->registrations->removeElement($registration)) {
+            return;
         }
+
+        // set the owning side to null (unless already changed)
+        if ($registration->getEvent() !== $this) {
+            return;
+        }
+
+        $registration->setEvent(null);
     }
 
     public function getOrganizer(): ?User

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\Event;
@@ -12,6 +14,10 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+use function assert;
+use function count;
+use function rand;
+
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     private const NUMBER_OF_USERS_FAKER = 200;
@@ -22,9 +28,10 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
     public function __construct(
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly EventManager $eventManager
-    ) {}
+    ) {
+    }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
 
@@ -82,6 +89,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
+    /** @return string[] */
     public function getDependencies(): array
     {
         return [

@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exception;
 
-class UserIsAlreadyRegisteredToThisEventException extends \Exception
+use Exception;
+
+class UserIsAlreadyRegisteredToThisEventException extends Exception
 {
 }

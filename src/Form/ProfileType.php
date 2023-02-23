@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
 use App\Entity\Country;
@@ -16,21 +18,23 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
+use function assert;
+use function count;
+
 class ProfileType extends AbstractType
 {
-    public function __construct(private EntityManagerInterface $entityManager) {}
+    public function __construct(private EntityManagerInterface $entityManager)
+    {
+    }
 
+    /** @param array<string,mixed> $options */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $provinceRepository = $this->entityManager->getRepository(Province::class);
 
         $builder
-            ->add('firstName', TextType::class,[
-                'required' => false
-            ])
-            ->add('lastName', TextType::class,[
-                'required' => false
-            ])
+            ->add('firstName', TextType::class, ['required' => false])
+            ->add('lastName', TextType::class, ['required' => false])
             ->add('avatarImageFile', VichImageType::class, [
                 'required' => false,
                 'allow_delete' => true,
@@ -40,13 +44,13 @@ class ProfileType extends AbstractType
                 'image_uri' => true,
                 'asset_helper' => true,
             ])
-            ->add('country',
+            ->add(
+                'country',
                 CountryAutocompleteField::class,
-            )
-        ;
+            );
 
-        $formModifier = function (FormInterface $form, ?Country $country = null) use ($provinceRepository){
-            $provinces = null === $country ? [] : $provinceRepository->findBy(['country' => $country],['name' => 'ASC']);
+        $formModifier = static function (FormInterface $form, ?Country $country = null) use ($provinceRepository): void {
+            $provinces = $country === null ? [] : $provinceRepository->findBy(['country' => $country], ['name' => 'ASC']);
 
             $form->add('province', EntityType::class, [
                 'class' => Province::class,
@@ -58,7 +62,7 @@ class ProfileType extends AbstractType
 
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) use ($formModifier) {
+            static function (FormEvent $event) use ($formModifier): void {
                 // this would be your entity, i.e. SportMeetup
                 $data = $event->getData();
                 assert($data instanceof User);
@@ -69,7 +73,7 @@ class ProfileType extends AbstractType
 
         $builder->get('country')->addEventListener(
             FormEvents::POST_SUBMIT,
-            function (FormEvent $formEvent) use ($formModifier) {
+            static function (FormEvent $formEvent) use ($formModifier): void {
                 // It's important here to fetch $event->getForm()->getData(), as
                 // $event->getData() will get you the client data (that is, the ID)
                 $country = $formEvent->getForm()->getData();
@@ -80,12 +84,12 @@ class ProfileType extends AbstractType
             }
         );
     }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
-            'validation_groups' => ['Default', 'edit']
+            'validation_groups' => ['Default', 'edit'],
         ]);
     }
 }
-

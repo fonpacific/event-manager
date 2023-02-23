@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Safe\Exceptions\StringsException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
+use function Safe\sprintf;
+
 /**
  * @extends ServiceEntityRepository<User>
- *
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
  * @method User|null findOneBy(array $criteria, array $orderBy = null)
  * @method User[]    findAll()
@@ -28,18 +32,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         $this->getEntityManager()->persist($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
+        if (! $flush) {
+            return;
         }
+
+        $this->getEntityManager()->flush();
     }
 
     public function remove(User $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
+        if (! $flush) {
+            return;
         }
+
+        $this->getEntityManager()->flush();
     }
 
     /**
@@ -47,8 +55,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
-        if (!$user instanceof User) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+        if (! $user instanceof User) {
+            try {
+                throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
+            } catch (StringsException $e) {
+            }
         }
 
         $user->setPassword($newHashedPassword);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Model\IdentifiableTrait;
@@ -10,7 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: RegistrationRepository::class), ORM\HasLifecycleCallbacks]
 class Registration
 {
-    use TimeStampableTrait, IdentifiableTrait;
+    use TimeStampableTrait;
+    use IdentifiableTrait;
 
     public function __construct(Event $event, User $user)
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Registration;
@@ -8,7 +10,6 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Registration>
- *
  * @method Registration|null find($id, $lockMode = null, $lockVersion = null)
  * @method Registration|null findOneBy(array $criteria, array $orderBy = null)
  * @method Registration[]    findAll()
@@ -25,18 +26,22 @@ class RegistrationRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
+        if (! $flush) {
+            return;
         }
+
+        $this->getEntityManager()->flush();
     }
 
     public function remove(Registration $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
+        if (! $flush) {
+            return;
         }
+
+        $this->getEntityManager()->flush();
     }
 
 //    /**

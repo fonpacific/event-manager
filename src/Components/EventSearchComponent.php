@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Components;
 
+use App\Entity\Event;
 use App\Repository\EventRepository;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
@@ -17,10 +20,10 @@ class EventSearchComponent
 
     public function __construct(
         private readonly EventRepository $eventRepository
-    )
-    {
+    ) {
     }
 
+    /** @return Event[] */
     public function getEvents(): array
     {
         return $this->eventRepository->search($this->query);

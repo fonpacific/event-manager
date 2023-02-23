@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
 use App\Entity\Event;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,16 +16,15 @@ use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class EventType extends AbstractType
 {
+    /** @param array<string,mixed> $options */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class)
             ->add('description', CKEditorType::class, [
-                'config' => array('toolbar' => 'standard'),
+                'config' => ['toolbar' => 'standard'],
             ])
-            ->add('maxAttendeesNumber', IntegerType::class, [
-                'label' => 'Maximum number of participants'
-            ])
+            ->add('maxAttendeesNumber', IntegerType::class, ['label' => 'Maximum number of participants'])
             ->add('startDate', DateTimeType::class, [
                 'widget' => 'single_text',
                 'required' => false,
@@ -60,8 +59,7 @@ class EventType extends AbstractType
                 'download_uri' => true,
                 'image_uri' => true,
                 'asset_helper' => true,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

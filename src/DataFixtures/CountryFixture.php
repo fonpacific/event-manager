@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\Country;
@@ -9,7 +11,7 @@ use Symfony\Component\Intl\Countries;
 
 class CountryFixture extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $countries = Countries::getNames();
 

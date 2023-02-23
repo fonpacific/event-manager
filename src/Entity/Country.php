@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Model\IdentifiableTrait;
@@ -47,7 +49,7 @@ class Country
 
     public function addProvince(Province $province): self
     {
-        if (!$this->provinces->contains($province)) {
+        if (! $this->provinces->contains($province)) {
             $this->provinces->add($province);
             $province->setCountry($this);
         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Model\DescriptionTrait;
@@ -12,7 +14,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PlaceRepository::class),ORM\HasLifecycleCallbacks]
 class Place
 {
-    use TimeStampableTrait, IdentifiableTrait, NameTrait, DescriptionTrait;
+    use TimeStampableTrait;
+    use IdentifiableTrait;
+    use NameTrait;
+    use DescriptionTrait;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $streetAddress = null;
@@ -26,7 +31,8 @@ class Place
     #[ORM\Embedded(class: GeoCoordinates::class)]
     private GeoCoordinates $coordinates;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->coordinates = new GeoCoordinates();
     }
 

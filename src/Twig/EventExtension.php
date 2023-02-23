@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Twig;
 
 use App\Entity\Event;
+use RuntimeException;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use UnhandledMatchError;
 
 class EventExtension extends AbstractExtension
 {
@@ -17,13 +21,18 @@ class EventExtension extends AbstractExtension
         ];
     }
 
+    /** @throws RuntimeException */
     public function eventStatusLabel(string $status): string
     {
-        return match ($status) {
-            Event::STATUS_PUBLISHED => 'Published',
-            Event::STATUS_DRAFT => 'Draft',
-            Event::STATUS_CANCELLED => 'Cancelled',
-        };
+        try {
+            return match ($status) {
+                Event::STATUS_PUBLISHED => 'Published',
+                Event::STATUS_DRAFT => 'Draft',
+                Event::STATUS_CANCELLED => 'Cancelled',
+            };
+        } catch (UnhandledMatchError $e) {
+            throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     public function eventStatusClass(string $status): string

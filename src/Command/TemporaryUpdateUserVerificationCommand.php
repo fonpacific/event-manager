@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+
+use function assert;
 
 #[AsCommand(
     name: 'app:temporary:update-user-verification',
@@ -18,7 +20,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class TemporaryUpdateUserVerificationCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager) {
+    public function __construct(private EntityManagerInterface $entityManager)
+    {
         parent::__construct();
     }
 
@@ -28,8 +31,7 @@ class TemporaryUpdateUserVerificationCommand extends Command
 
         $users = $this->entityManager->getRepository(User::class)->findAll();
 
-        foreach ($users as $user)
-        {
+        foreach ($users as $user) {
             assert($user instanceof User);
             $user->setIsVerified(false);
         }

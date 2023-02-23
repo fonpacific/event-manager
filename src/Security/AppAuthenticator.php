@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security;
 
 use App\Entity\User;
@@ -18,6 +20,8 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
+use function assert;
+
 class AppAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
@@ -26,7 +30,8 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     public const WELCOME_ROUTE = 'welcome';
 
     public function __construct(private UrlGeneratorInterface $urlGenerator, private Security $security, private EntityManagerInterface $entityManager)
-    {}
+    {
+    }
 
     public function authenticate(Request $request): Passport
     {
@@ -45,7 +50,9 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+        $targetPath = $this->getTargetPath($request->getSession(), $firewallName);
+
+        if ($targetPath) {
             return new RedirectResponse($targetPath);
         }
 

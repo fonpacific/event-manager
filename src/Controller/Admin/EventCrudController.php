@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\Event;
@@ -25,7 +27,6 @@ class EventCrudController extends AbstractCrudController
 {
     public function __construct(private EventManager $eventManager)
     {
-
     }
 
     public static function getEntityFqcn(): string
@@ -37,6 +38,7 @@ class EventCrudController extends AbstractCrudController
     {
         $crud->showEntityActionsInlined(true);
         $crud->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig');
+
         return $crud;
     }
 
@@ -55,7 +57,7 @@ class EventCrudController extends AbstractCrudController
             Event::STATUS_CANCELLED => 'danger',
         ]);
         $description = TextareaField::new('description', 'Descrizione')->setFormType(CKEditorType::class)
-        ->setFormTypeOption('config', array('toolbar' => 'standard'));
+        ->setFormTypeOption('config', ['toolbar' => 'standard']);
         $createdAt = DateTimeField::new('createdAt', 'Creazione')->setFormat('dd-MM-YY HH:mm');
         $updatedAt = DateTimeField::new('updatedAt', 'Ultima modifica')->setFormat('dd-MM-YY HH:mm');
         $startDate = DateTimeField::new('startDate', 'Inizio Evento')->setFormat('dd-MM-YY HH:mm');
@@ -66,7 +68,7 @@ class EventCrudController extends AbstractCrudController
         }
 
         if ($pageName === Crud::PAGE_DETAIL) {
-            return [$id, $name, $status, $startDate, $endDate,$description, $createdAt, $updatedAt];
+            return [$id, $name, $status, $startDate, $endDate, $description, $createdAt, $updatedAt];
         }
 
         if ($pageName === Crud::PAGE_NEW) {
@@ -97,11 +99,11 @@ class EventCrudController extends AbstractCrudController
 
         $this->eventManager->approve($event);
 
-       $url = empty($context->getReferrer())
+        $url = empty($context->getReferrer())
            ? $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl()
            : $context->getReferrer();
 
-       return $this->redirect($url);
+        return $this->redirect($url);
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -109,14 +111,11 @@ class EventCrudController extends AbstractCrudController
         return $filters
             ->add('name')
             ->add(ChoiceFilter::new('status')->setChoices([
-                    'Bozza' => Event::STATUS_DRAFT,
-                    'Cancellato' => Event::STATUS_CANCELLED,
-                    'Pubblicato' => Event::STATUS_PUBLISHED,
-                ]
-            ))
+                'Bozza' => Event::STATUS_DRAFT,
+                'Cancellato' => Event::STATUS_CANCELLED,
+                'Pubblicato' => Event::STATUS_PUBLISHED,
+            ]))
             ->add('startDate')
-            ->add('endDate')
-            ;
+            ->add('endDate');
     }
-
 }

@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Event;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Event>
- *
  * @method Event|null find($id, $lockMode = null, $lockVersion = null)
  * @method Event|null findOneBy(array $criteria, array $orderBy = null)
  * @method Event[]    findAll()
@@ -18,7 +20,6 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EventRepository extends ServiceEntityRepository
 {
-
     public const EVENT_FILTER_ONLY_PAST = 0;
     public const EVENT_FILTER_ONLY_FUTURE = 1;
     public const EVENT_FILTER_ALL_TIME = 2;
@@ -32,28 +33,33 @@ class EventRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
+        if (! $flush) {
+            return;
         }
+
+        $this->getEntityManager()->flush();
     }
 
     public function remove(Event $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
+        if (! $flush) {
+            return;
         }
+
+        $this->getEntityManager()->flush();
     }
 
+    /** @return Event[] */
     public function findAvailable(): array
     {
         return $this->findAvailableQB()
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
+    /** @return Event[] */
     public function upcomingEventsForUser(User $user): array
     {
         return $this->findAvailableQB([Event::STATUS_PUBLISHED, Event::STATUS_CANCELLED])
@@ -61,10 +67,10 @@ class EventRepository extends ServiceEntityRepository
             ->andWhere('r.platformUser = :user')
             ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
+    /** @return Event[] */
     public function historyEventsForUser(User $user): array
     {
         return $this->findAvailableQB([Event::STATUS_PUBLISHED, Event::STATUS_CANCELLED], mode: self::EVENT_FILTER_ONLY_PAST)
@@ -72,20 +78,20 @@ class EventRepository extends ServiceEntityRepository
             ->andWhere('r.platformUser = :user')
             ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
+    /** @return Event[] */
     public function myEventsForOrganizer(User $user): array
     {
         return $this->findAvailableQB(Event::STATUSES, mode: self::EVENT_FILTER_ALL_TIME)
             ->andWhere('e.organizer = :user')
             ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
+    /** @return Event[] */
     public function search(string $query): array
     {
         $qb = $this->findAvailableQB(Event::STATUSES, mode: self::EVENT_FILTER_ALL_TIME);
@@ -93,8 +99,7 @@ class EventRepository extends ServiceEntityRepository
         if ($query !== '') {
             $qb
                 ->andWhere('e.name LIKE :query OR e.description LIKE :query')
-                ->setParameter('query', "%$query%")
-            ;
+                ->setParameter('query', "%$query%");
         }
 
         return $qb->getQuery()->getResult();
@@ -102,7 +107,7 @@ class EventRepository extends ServiceEntityRepository
 
     private function findAvailableQB(array $statuses = Event::STATUSES_AVAILABLE, int $mode = self::EVENT_FILTER_ONLY_FUTURE): QueryBuilder
     {
-        $now = new \DateTime();
+        $now = new DateTime();
         $qb = $this->createQueryBuilder('e');
 
         if ($mode === self::EVENT_FILTER_ONLY_PAST) {
@@ -117,6 +122,7 @@ class EventRepository extends ServiceEntityRepository
             ->andWhere('e.status IN (:statuses)')
             ->setParameter('statuses', $statuses)
             ->orderBy('e.startDate', 'ASC');
+
         return $qb;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use App\Entity\Event;
@@ -10,16 +12,19 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class EventManager
 {
-    public function __construct(private EntityManagerInterface $entityManager) {}
+    public function __construct(private EntityManagerInterface $entityManager)
+    {
+    }
 
     public function approve(Event $event, bool $andFlush = true): void
     {
         $event->approve();
 
-        if($andFlush === true)
-        {
-            $this->entityManager->flush();
+        if ($andFlush !== true) {
+            return;
         }
+
+        $this->entityManager->flush();
     }
 
     /** @throws UserIsAlreadyRegisteredToThisEventException */
@@ -27,30 +32,29 @@ class EventManager
     {
         $registration = $this->findRegistration($event, $user);
 
-        if($registration !== null)
-        {
+        if ($registration !== null) {
             throw new UserIsAlreadyRegisteredToThisEventException();
         }
 
-        if(!$event->canRegister($user)){
+        if (! $event->canRegister($user)) {
             return;
         }
 
         $registration = new Registration($event, $user);
 
         $this->entityManager->persist($registration);
-        if($andFlush === true)
-        {
-            $this->entityManager->flush();
+        if ($andFlush !== true) {
+            return;
         }
+
+        $this->entityManager->flush();
     }
 
     public function unregister(Event $event, User $user): void
     {
         $registration = $this->findRegistration($event, $user);
 
-        if($registration === null)
-        {
+        if ($registration === null) {
             return;
         }
 
@@ -62,7 +66,7 @@ class EventManager
     {
         return $this->entityManager->getRepository(Registration::class)->findOneBy([
             'platformUser' => $user,
-            'event' => $event
+            'event' => $event,
         ]);
     }
 }

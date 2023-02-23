@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Entity;
+declare(strict_types=1);
 
+namespace App\Entity;
 
 use App\Model\IdentifiableTrait;
 use App\Model\TimeStampableTrait;
@@ -16,6 +17,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+use function array_unique;
+use function in_array;
 
 #[ORM\Entity(repositoryClass: UserRepository::class), ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: '`user`')]
@@ -23,11 +26,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use TimeStampableTrait, IdentifiableTrait;
+    use TimeStampableTrait;
+    use IdentifiableTrait;
 
     public function __toString(): string
     {
-        return $this->firstName && $this->lastName ? $this->firstName.' '.$this->lastName : $this->email;
+        return $this->firstName && $this->lastName ? $this->firstName . ' ' . $this->lastName : $this->email;
     }
 
     #[ORM\Column(length: 180, unique: true)]
@@ -128,7 +132,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -142,10 +146,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addRegistration(Registration $registration): void
     {
-        if (!$this->registrations->contains($registration)) {
-            $this->registrations->add($registration);
-            $registration->setPlatformUser($this);
+        if ($this->registrations->contains($registration)) {
+            return;
         }
+
+        $this->registrations->add($registration);
+        $registration->setPlatformUser($this);
     }
 
     public function removeRegistration(Registration $registration): void
@@ -253,7 +259,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addEvent(Event $event): self
     {
-        if (!$this->events->contains($event)) {
+        if (! $this->events->contains($event)) {
             $this->events->add($event);
             $event->setOrganizer($this);
         }
