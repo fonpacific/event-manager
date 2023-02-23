@@ -41,14 +41,7 @@ class ProfileType extends AbstractType
                 'asset_helper' => true,
             ])
             ->add('country',
-                EntityType::class,
-                [
-                    'class' => Country::class,
-                    'expanded' => false,
-                    'multiple' => false,
-                    'required' => false,
-                    'autocomplete' => true
-                ]
+                CountryAutocompleteField::class,
             )
         ;
 
