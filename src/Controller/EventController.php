@@ -28,6 +28,12 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[Route('/event-search', name:'app_event_search', methods: ['GET'])]
+    public function search(): Response
+    {
+        return $this->render('event/search.html.twig');
+    }
+
     #[IsGranted('ROLE_ORGANIZER')]
     #[Route('/event/new', name: 'app_event_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EventRepository $eventRepository): Response

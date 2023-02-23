@@ -30,6 +30,9 @@
         "symfony/security-csrf": "6.2.*",
         "symfony/string": "6.2.*",
         "symfony/twig-bundle": "6.2.*",
+        "symfony/ux-autocomplete": "^2.7",
+        "symfony/ux-live-component": "^2.7",
+        "symfony/ux-twig-component": "^2.7",
         "symfony/validator": "6.2.*",
         "symfony/webpack-encore-bundle": "^1.16",
         "symfony/yaml": "6.2.*",
@@ -42,7 +45,9 @@
     "config": {
         "allow-plugins": {
             "symfony/flex": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "phpstan/extension-installer": true
         },
         "sort-packages": true
     },

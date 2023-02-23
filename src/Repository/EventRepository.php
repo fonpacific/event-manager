@@ -76,16 +76,40 @@ class EventRepository extends ServiceEntityRepository
             ;
     }
 
+    public function myEventsForOrganizer(User $user): array
+    {
+        return $this->findAvailableQB(Event::STATUSES, mode: self::EVENT_FILTER_ALL_TIME)
+            ->andWhere('e.organizer = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function search(string $query): array
+    {
+        $qb = $this->findAvailableQB(Event::STATUSES, mode: self::EVENT_FILTER_ALL_TIME);
+
+        if ($query !== '') {
+            $qb
+                ->andWhere('e.name LIKE :query OR e.description LIKE :query')
+                ->setParameter('query', "%$query%")
+            ;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     private function findAvailableQB(array $statuses = Event::STATUSES_AVAILABLE, int $mode = self::EVENT_FILTER_ONLY_FUTURE): QueryBuilder
     {
         $now = new \DateTime();
         $qb = $this->createQueryBuilder('e');
 
         if ($mode === self::EVENT_FILTER_ONLY_PAST) {
-            $qb ->andWhere('e.startDate <= :now')
+            $qb->andWhere('e.startDate <= :now')
                 ->setParameter('now', $now);
         } elseif ($mode === self::EVENT_FILTER_ONLY_FUTURE) {
-            $qb ->andWhere('e.endDate >= :now')
+            $qb->andWhere('e.endDate >= :now')
                 ->setParameter('now', $now);
         }
 
@@ -95,28 +119,4 @@ class EventRepository extends ServiceEntityRepository
             ->orderBy('e.startDate', 'ASC');
         return $qb;
     }
-//    /**
-//     * @return Event[] Returns an array of Event objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Event
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

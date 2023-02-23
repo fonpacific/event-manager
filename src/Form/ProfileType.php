@@ -47,6 +47,7 @@ class ProfileType extends AbstractType
                     'expanded' => false,
                     'multiple' => false,
                     'required' => false,
+                    'autocomplete' => true
                 ]
             )
         ;

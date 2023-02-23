@@ -29,3 +29,46 @@
 {% macro status_badge(status) %}
     <span class="badge text-bg-{{ status|event_status_class }}">{{ status|event_status_label }}</span>
 {% endmacro %}
+
+{% macro event_table(events) %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col"># Registered</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            {{ _self.event_row(event) }}
+        {% else %}
+            <tr>
+                <td colspan="5">
+                    No records
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
+
+{% macro event_row(event) %}
+    <tr>
+        <th scope="row">{{ event.name }}</th>
+        <td>{{ event.startDate ? event.startDate|date('d-m-Y') : 'NA' }}</td>
+        <td>{{ event.endDate ? event.endDate|date('d-m-Y') : 'NA' }}</td>
+        <td>{{ event.registrationCount }}</td>
+        <td>
+            <div class="btn-group">
+                <a href="{{ path('app_event_show', {'slug': event.slug}) }}" class="btn btn-primary">Details</a>
+                <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn btn-secondary">Edit</a>
+            </div>
+        </td>
+    </tr>
+{% endmacro %}
+
+
+

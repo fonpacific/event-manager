@@ -53,4 +53,13 @@ class ProfileController extends AbstractController
             'events' => $eventRepository->historyEventsForUser($this->getUser()),
         ]);
     }
+
+    #[IsGranted('ROLE_ORGANIZER')]
+    #[Route('/my-events', name: 'app_profile_my_events', methods: ['GET'])]
+    public function myEvents(EventRepository $eventRepository) : Response
+    {
+        return $this->render('profile/my_events.html.twig', [
+            'events' => $eventRepository->myEventsForOrganizer($this->getUser()),
+        ]);
+    }
 }
