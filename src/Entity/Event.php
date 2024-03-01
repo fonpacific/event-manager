@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Model\DescriptionTrait;
+use App\Model\IdentifiableTrait;
+use App\Model\NameTrait;
 use App\Model\TimeStampableTrait;
 use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,25 +19,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Event
 {
 
-    use TimeStampableTrait;
+    use TimeStampableTrait, IdentifiableTrait, NameTrait, DescriptionTrait;
 
-    public function __toString() : string
-    {
-        return $this->name ?? 'nd';
-    }
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_PUBLISHED = 'published';
+    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUSES = [self::STATUS_DRAFT, self::STATUS_PUBLISHED,self::STATUS_CANCELLED];
 
+   
 
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
     private ?\DateTimeInterface $startDate = null;
@@ -58,6 +51,13 @@ class Event
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $registrationsStartDate = null;
 
+
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $registrationsEndDate2 = null;
+
+    #[ORM\ManyToOne]
+    private ?Place $place = null;
+
    
 
     public function __construct()
@@ -65,34 +65,8 @@ class Event
         $this->children = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
 
     public function getStartDate(): ?\DateTimeInterface
     {
@@ -192,6 +166,30 @@ class Event
     public function setRegistrationsStartDate(?\DateTimeInterface $registrationsStartDate): static
     {
         $this->registrationsStartDate = $registrationsStartDate;
+
+        return $this;
+    }
+
+    public function getRegistrationsEndDate2(): ?\DateTimeInterface
+    {
+        return $this->registrationsEndDate2;
+    }
+
+    public function setRegistrationsEndDate2(?\DateTimeInterface $registrationsEndDate2): static
+    {
+        $this->registrationsEndDate2 = $registrationsEndDate2;
+
+        return $this;
+    }
+
+    public function getPlace(): ?Place
+    {
+        return $this->place;
+    }
+
+    public function setPlace(?Place $place): static
+    {
+        $this->place = $place;
 
         return $this;
     }

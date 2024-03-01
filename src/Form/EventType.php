@@ -21,10 +21,12 @@ class EventType extends AbstractType
             ->add('maxAttendeesNumber')
             ->add('status')
             ->add('registrationsStartDate')
+            ->add('registrationsEndDate2')
             ->add('parent', EntityType::class, [
                 'class' => Event::class,
 'choice_label' => 'id',
             ])
+            ->add('place');
         ;
     }
 
