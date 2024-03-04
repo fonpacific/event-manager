@@ -2,20 +2,23 @@
 
 namespace App\Entity;
 
+use App\Model\NameTrait;
+use Doctrine\DBAL\Types\Types;
 use App\Model\DescriptionTrait;
 use App\Model\IdentifiableTrait;
-use App\Model\NameTrait;
+use Doctrine\ORM\Mapping as ORM;
 use App\Model\TimeStampableTrait;
 use App\Repository\EventRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\ArrayCollection;
 
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: EventRepository::class), ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 class Event
 {
 
@@ -30,12 +33,15 @@ class Event
 
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    #[Assert\Type('datetime')]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    #[Assert\Type('datetime'), Assert\GreaterThan(propertyPath: 'startDate')]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Type('integer'), Assert\GreaterThan(0)]
     private ?int $maxAttendeesNumber = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
@@ -45,28 +51,41 @@ class Event
     private Collection $children;
 
     #[ORM\Column(length: 255)]
-    #[assert\NotNull()]
+    #[assert\NotNull(), Assert\Type('string')]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    #[Assert\Type('datetime')]
     private ?\DateTimeInterface $registrationsStartDate = null;
 
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    #[Assert\Type('datetime'), Assert\GreaterThan(propertyPath: 'registrationsStartDate')]
     private ?\DateTimeInterface $registrationsEndDate2 = null;
 
     #[ORM\ManyToOne]
     private ?Place $place = null;
 
+    #[Vich\UploadableField(mapping: 'event_cover', fileNameProperty: 'coverImageName', originalName:'coverImageOriginalName', size: 'coverImageSize')]
+    private ?File $coverImageFile = null;
+    
+
+
+    #[ORM\Column(nullable: true, type: 'string')]
+    private ?string $coverImageName = null;
+
+    #[ORM\Column(nullable: true, type: 'integer')]
+    private ?int $coverImageSize = null;
+
+    #[ORM\Column(nullable: true, type: 'string')]
+    private ?string $coverImageOriginalName = null;
    
 
     public function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->status = self::STATUS_DRAFT;
     }
-
-    
-
 
     public function getStartDate(): ?\DateTimeInterface
     {
@@ -193,5 +212,41 @@ class Event
 
         return $this;
     }
+
+    public function getCoverImageFile(): ?file {
+        return $this->coverImageFile;
+    }
+
+    public function setCoverImageFile(?File $coverImageFile): void {
+        $this->coverImageFile=$coverImageFile;
+        if(null !== $coverImageFile) {
+            $this->updatedAt=new \DateTimeImmutable();
+        }
+    }
+
+    public function getCoverImageName(): ?string {
+        return $this->coverImageName;
+    }
+
+    public function setCoverImageName(?string $coverImageName): void {
+        $this->coverImageName=$coverImageName;
+    }
+
+    public function getCoverImageSize(): ?int {
+        return $this->coverImageSize;
+    }
+
+    public function setCoverImageSize(?int $coverImageSize): void {
+        $this->coverImageSize=$coverImageSize;
+    }
+
+    public function getCoverImageOriginalName(): ?string {
+        return $this->coverImageOriginalName;
+    }
+
+    public function setCoverImageOriginalName(?string $coverImageOriginalName): void {
+        $this->coverImageOriginalName=$coverImageOriginalName;
+    }
+
 
 }
