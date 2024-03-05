@@ -21,18 +21,27 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    public function findAvailable(): array {
+        
+        $now= new \DateTime();
+        return $this->createQueryBuilder('e')
+                    ->andWhere('e.endDate >= :now')
+                    ->andWhere('e.status IN (:statuses)')
+                    ->setParameter('now', $now)
+                    ->setParameter('statuses', Event::STATUSES_AVAILABLE)
+                    ->orderBy('e.startDate', 'ASC')
+                    ->setMaxResults(10)
+                    ->getQuery()
+                    ->getResult()
+                    ;
+    }
+
     //    /**
     //     * @return Event[] Returns an array of Event objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
+    //      
     //        ;
     //    }
 

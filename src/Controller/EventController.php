@@ -14,7 +14,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/event')]
 class EventController extends AbstractController
 {
-    #[Route('/', name: 'app_event_index', methods: ['GET'])]
+    #[Route('/event', name: 'app_event_index', methods: ['GET'])]
+    #[Route('/welcome', name: 'welcome', methods: ['GET'])]
     public function index(EventRepository $eventRepository): Response
     {
         return $this->render('event/index.html.twig', [
@@ -28,7 +29,7 @@ class EventController extends AbstractController
         $event = new Event();
         $event->setStartDate(new \DateTime());
         $event->setEndDate(new \DateTime());
-        
+       
 
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);

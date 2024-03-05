@@ -25,7 +25,7 @@ class AppFixtures extends Fixture
             $event->setDescription(rand(0,2) === 0 ? $faker->text(250,true) : null);
             $event->setMaxAttendeesNumber(rand(0,2) === 0 ? $faker->numberBetween(50,1000) : null);
             $event->setStatus($faker->randomElement(Event::STATUSES));
-            $event->setStartDate($faker->dateTimeThisYear());
+            $event->setStartDate($faker->dateTimeThisYear(max: '+2 months'));
             $event->setEndDate($event->getStartDate());
             $event->setRegistrationsStartDate(rand(0,2) === 0 ? $event->getStartDate() : null);
             $event->setRegistrationsEndDate2(rand(0,2) === 0 ? $event->getEndDate() : null);
