@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/events.html.twig' as event_macro %}
+
+{% block title %}Event search{% endblock %}
+{% block container_class %} container-fluid {% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col">
+            <h1>Event index</h1>
+        </div>
+    </div>
+
+ 
+
+<div class="row mt-4">
+        <div class="col-12">
+            {{ component('event_search') }}
+        </div>
+
+{% endblock %}

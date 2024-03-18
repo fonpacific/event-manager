@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/events.html.twig' as event_macro %}
+
+{% block container_class %}container-fluid{% endblock %}
+
+{% block body %}
+
+  <div class="row">
+    <div class="col">
+         {% include 'profile/sidebar.html.twig' %}
+    </div>
+
+    <div class="col-12 col-lg-9">
+    <h3>Upcoming events</h3>
+    <div class="row mt-4">
+            {% for event in events %}
+                <div class="col-12 col-lg-4 mb-3">    
+                    {{ event_macro.default_card(event) }}
+                </div>
+            {% else %}
+                    <div class="col">
+                        <p>no records found</p>
+                    </div>
+            {% endfor %}
+    </div>
+    </div>
+</div>
+{% endblock %}

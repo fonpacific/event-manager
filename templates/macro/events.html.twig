@@ -1,18 +1,76 @@
 {% macro default_card(event) %}
-  <div class="card">
-    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ event.name }}">
+  <div class="card h-100">
+    {% if event.coverImageName %}
+        <img src="{{ vich_uploader_asset(event, 'coverImageFile') }}" class="card-img-top" alt="{{ event.name }}">
+   
+        <img src="{{ asset('build/images/placeholder_small.png') }}" class="card-img-top" alt="{{ event.name }}">
+    {% endif %}
+    
         <div class="card-body">
             <h5 class="card-title">{{ event.name }}</h5>
             <p class="card-text"> {{ _self.status_badge(event.status) }} </p>
             <p class="card-text"> {{ event.description }} </p>
-            <p class="card-text"> {{ event.startDate ? event.startDate('d-m-Y') : 'NA' }} 
-                -> {{ event.endDate ? event.endDate('d-m-Y') : 'NA' }}
+            <p class="card-text"> {{ event.startDate ? event.startDate|format_datetime(pattern='d-m-Y') : 'NA' }} 
+                -> {{ event.endDate ? event.endDate|format_datetime(pattern='d-m-Y') : 'NA' }}
             </p>
-            <a href="{{ path('app_event_show', {'id': event_id}) }}" class="btn btn-primary">Details</a>
+            <div class="btn-group">
+                {% if is_granted("ROLE_USER") %}
+                    {% if event.canRegister(app.user) %}
+                        <a href="{{ path('app_event_register', {'id': event.id}) }}" class="btn btn-primary">Register</a>
+                    {% endif %}
+
+                    {% if event.isRegistered(app.user) %}
+                        <a href="{{ path('app_event_unregister', {'id': event.id}) }}" class="btn btn-primary">Unregister</a>
+                    {% endif %}
+                {% endif %}
+                
+            </div>
+
+            <a href="{{ path('app_event_show', {'slug': event.slug}) }}" class="btn btn-primary">Details</a>        
         </div>
 </div>
 {% endmacro %}
 
 {% macro status_badge(status)  %}
-    <span class="badge text-bg- {{ status|event_status_class }}">{{status|event_status_label }}</span>
+   
+   <span class="badge text-bg-{{ status|event_status_class }}">{{ status|event_status_label }}</span>
 {% endmacro %}
+
+{% macro event_table(events)  %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">End Date</th>
+                    <th scope="col"># Registered</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+        <tbody>
+        {% for event in events %}
+            {{ _self.event_row(event) }}
+        {% else %}
+            <tr>
+                <td colspan="5">
+                    No records
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
+
+{% macro event_row(event)  %}
+<tr>
+        <th scope="row">{{ event.name }}</th>
+        <td>{{ event.startDate ? event.startDate|date('d-m-Y') : 'NA' }}</td>
+        <td>{{ event.endDate ? event.endDate|date('d-m-Y') : 'NA' }}</td>
+        <td>{{ event.registrationCount }}</td>
+        <td>
+            <div class="btn-group">
+                <a href="{{ path('app_event_show', {'slug': event.slug}) }}" class="btn btn-primary">Details</a>
+                <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn btn-secondary">Edit</a>
+            </div>
+        </td>
+    </tr>{% endmacro %}

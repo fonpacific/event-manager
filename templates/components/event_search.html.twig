@@ -1,0 +1,9 @@
+{% import "macro/events.html.twig" as event_macro %}
+
+<div {{ attributes }}>
+    <input
+            type="search"
+            data-model="debounce(1000)|query"
+    >
+    {{ event_macro.event_table(this.events) }}
+</div>

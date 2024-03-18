@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/events.html.twig' as event_macro %}
+
+{% block container_class %}container-fluid{% endblock %}
+
+{% block body %}
+
+  <div class="row">
+    <div class="col-3">
+         {% include 'profile/sidebar.html.twig' %}
+    </div>
+
+    <div class="col-12 col-lg-6">
+    <h3>Edit profile</h3>
+    <div class="mt-4">
+            {{ form_start(form) }}
+            {{ form_row(form.firstName) }}
+            {{ form_row(form.lastName) }}
+            {{ form_row(form.avatarImageFile) }}
+            {{ form_row(form.country) }}
+            {{ form_row(form.province) }}
+            <button class="btn btn-success">Update</button>
+        {{ form_end(form, {'render_rest' : true}) }}
+      </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+        var $country = $('#profile_country');
+        $country.change(function() {
+          var $form = $(this).closest('form');
+          var data = {};
+          data[$country.attr('name')] = $country.val();
+          $.ajax({
+            url : $form.attr('action'),
+            type: $form.attr('method'),
+            data : data,
+            complete: function(html) {
+            /*  $province = $('profile_province');
+              if (!$province.length) {
+                $('#profile_country').append($province);
+              } */
+
+              $('#profile_province').replaceWith(
+                $(html.responseText).find('#profile_province')
+              );
+            }
+          });
+        });
+
+    </script>
+
+
+{% endblock %}

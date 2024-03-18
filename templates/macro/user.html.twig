@@ -1,0 +1,15 @@
+{% macro registration_card(registration) %}
+    {% set user= registration.platformUser %}
+    <div class="card h-100">
+        <div class="card-img-top text-center h2 my-2">
+            <i class="bi bi-person"></i>
+        </div>
+
+        <img src="{{ asset('build/images/user_placeholder.png') }}" class="card-img-top" alt="{{ user.email }}">
+        <div class="card-body">
+            <p>{{ user.email }}</p>
+            <p>Registered at: {{ registration.createdAt|date("H:i:s d/m/Y") }}</p>
+        </div>
+    </div>
+
+{% endmacro %}

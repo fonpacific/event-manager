@@ -1,0 +1,3 @@
+ux_entity_autocomplete_admin:
+    controller: ux.autocomplete.entity_autocomplete_controller
+    path: '/admin/autocomplete/{alias}'

@@ -17,8 +17,20 @@ services:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
-            - '../src/Entity/'
+            - '../src/Entity/*'
+            # - '../src/DataFixtures/*'
             - '../src/Kernel.php'
+            - '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+    
+    App\Twig\EventExtension:
+        tags: ['twig.extension']
+
+    
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    admin.event:
+        class: App\Admin\EventAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Event, controller: ~, manager_type: orm, group: admin, label: Event }

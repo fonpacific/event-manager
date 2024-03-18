@@ -2,11 +2,16 @@
 
 namespace App\Twig;
 
-use Symfony\Component\DependencyInjection\Extension\AbstractExtension;
+//use Symfony\Component\DependencyInjection\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use App\Entity\Event;
+use RuntimeException;
+use UnhandledMatchError;
+use Twig\Extension\ExtensionInterface;
+use Twig\Extension\AbstractExtension;
 
-class EventExtension extends AbstractExtension{
+
+class EventExtension extends AbstractExtension implements ExtensionInterface{
 
 
     /**
@@ -20,12 +25,15 @@ class EventExtension extends AbstractExtension{
     }
 
     public function eventStatuslabel(string $status): string{
-        return match ($status){
-            Event::STATUS_PUBLISHED => 'Published',
-            Event::STATUS_DRAFT=> 'Draft',
-            Event::STATUS_CANCELLED => 'Cancelled',
-        };
-        
+        try {
+            return match ($status){
+                Event::STATUS_PUBLISHED => 'Published',
+                Event::STATUS_DRAFT=> 'Draft',
+                Event::STATUS_CANCELLED => 'Cancelled',
+            };
+        } catch (UnhandledMatchError $e) {
+            throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
+        }
 
     }
 

@@ -30,14 +30,64 @@ class Event
     public const STATUSES = [self::STATUS_DRAFT, self::STATUS_PUBLISHED,self::STATUS_CANCELLED];
     public const STATUSES_AVAILABLE = [self::STATUS_PUBLISHED,self::STATUS_CANCELLED];
    
+    public function canRegister(User $user): bool {
+        if ($this->isRegistered($user)) {
+            return false;
+        } 
+
+        if($this->getMaxAttendeesNumber() != null && $this->registrationCount() >= $this->getMaxAttendeesNumber()) {
+            return false;
+        }
+
+        $now=new \DateTime();
+        if (
+            ($this->getRegistrationsStartDate() !== null && $now <= $this->getRegistrationsStartDate()) ||
+            ($this->getRegistrationsEndDate2() !== null && $now >= $this->getRegistrationsEndDate2())
+        ) {
+            return false;
+        }
+
+        if ($this->status !== self::STATUS_PUBLISHED) {
+            return false;
+        } 
+
+        return true;        
+    }
+
+    public function registrationCount(): int {
+        return $this->registrations->count();
+    }
+
+
+    public function isRegistered(User $user): bool {
+        return $this->getRegisteredUsers()->contains($user);
+    }
+
+    public function getRegisteredUsers(): Collection {
+        $users = [];
+
+        foreach($this->registrations as $registration) {
+            assert($registration instanceof Registration);
+            $users[]= $registration->getPlatformUser();
+        }
+
+        return new ArrayCollection($users);
+    }
+
+    public function approve(): void {
+        if($this->status !== self::STATUS_DRAFT) {
+            return;
+        }
+        $this->status = self::STATUS_PUBLISHED;
+    }
 
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    #[Assert\Type('datetime')]
+    #[Assert\Type('datetime'), Assert\NotNull]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    #[Assert\Type('datetime'), Assert\GreaterThan(propertyPath: 'startDate')]
+    #[Assert\Type('datetime'), Assert\NotNull, Assert\GreaterThan(propertyPath: 'startDate')]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column(nullable: true)]
@@ -79,12 +129,19 @@ class Event
 
     #[ORM\Column(nullable: true, type: 'string')]
     private ?string $coverImageOriginalName = null;
-   
+
+    #[ORM\OneToMany(targetEntity: Registration::class, mappedBy: 'event')]
+    private Collection $registrations;
+
+    #[ORM\ManyToOne(inversedBy: 'eventi')]
+    private ?User $organizer = null;
+
 
     public function __construct()
     {
         $this->children = new ArrayCollection();
         $this->status = self::STATUS_DRAFT;
+        $this->registrations = new ArrayCollection();
     }
 
     public function getStartDate(): ?\DateTimeInterface
@@ -248,5 +305,46 @@ class Event
         $this->coverImageOriginalName=$coverImageOriginalName;
     }
 
+    /**
+     * @return Collection<int, Registration>
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): static
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations->add($registration);
+            $registration->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): static
+    {
+        if ($this->registrations->removeElement($registration)) {
+            // set the owning side to null (unless already changed)
+            if ($registration->getEvent() === $this) {
+                $registration->setEvent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getOrganizer(): ?User
+    {
+        return $this->organizer;
+    }
+
+    public function setOrganizer(?User $organizer): static
+    {
+        $this->organizer = $organizer;
+
+        return $this;
+    }
 
 }

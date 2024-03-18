@@ -10,13 +10,19 @@
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
+            <script
+                    src="https://code.jquery.com/jquery-3.6.3.min.js"
+                    integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+                    crossorigin="anonymous"></script>
+
         {% endblock %}
     </head>
     <body>
-      
-{% include 'header.html.twig' %}
+    
+        {% include 'header.html.twig' %}
 
-        <div class="{% block container_class %} container {% endblock %}">
+        <div class="{% block container_class %}container{% endblock %}">
+            {% include 'alerts.html.twig' %}
             {% block body %}{% endblock %}
         </div>
 

@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/events.html.twig' as event_macro %}
+
+
+{% block container_class %}container-fluid{% endblock %}
+
+{% block body %}
+
+  <div class="row">
+    <div class="col">
+         {% include 'profile/sidebar.html.twig' %}
+    </div>
+
+    <div class="col-12 col-lg-8">
+    <h3>My events</h3>
+    <div class="row mt-4">
+      <div class="col-12 mb-3">
+        {{ event_macro.event_table(events) }}    
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
