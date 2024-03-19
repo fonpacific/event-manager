@@ -4,6 +4,17 @@ sonata_block:
         sonata.admin.block.admin_list:
             contexts: [admin]
 
+ # Configurazione delle classi admin
+sonata_admin.event:
+    class: App\Admin\EventAdmin
+    tags:
+         - { name: sonata.admin, manager_type: orm, group: sonata.admin.group.content, label: 'Event' }
+    arguments:
+            - ~
+            - App\Entity\Event
+            - ~
+    calls:
+            - [ setTranslationDomain, [AppBundle]]
 
 
 sonata_admin:
@@ -24,5 +35,5 @@ sonata_admin:
     # Configurazione del routing
     templates:
         dashboard: '@SonataAdmin/Core/dashboard.html.twig'
-        layout:   '@SonataAdmin/Core/layout.html.twig'
+        layout:   '@SonataAdmin/standard_layout.html.twig'
         user_block: '@SonataAdmin/Core/user_block.html.twig'
