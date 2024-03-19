@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Event;
 use Symfony\Component\Form\AbstractType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Sonata\MediaBundle\Form\Type\MediaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -48,8 +49,8 @@ class EventType extends AbstractType
                 'widget' => 'single_text',
             ])
 
-            ->add('media', 'sonata_media_type', [
-                'provider' => 'sonata.media.provider.youtube',
+            ->add('image', MediaType::class, [
+                'provider' => 'sonata.media.provider.image',
                 'context'  => 'default',
            ])
             ->add('parent')

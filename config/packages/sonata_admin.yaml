@@ -4,6 +4,8 @@ sonata_block:
         sonata.admin.block.admin_list:
             contexts: [admin]
 
+
+
 sonata_admin:
     title: 'Admin'
     security:
@@ -18,8 +20,7 @@ sonata_admin:
                     - sonata.admin.post
                     # Aggiungi altri admin qui, se necessario
 
-    
-
+   
     # Configurazione del routing
     templates:
         dashboard: '@SonataAdmin/Core/dashboard.html.twig'

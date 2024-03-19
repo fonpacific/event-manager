@@ -11,9 +11,10 @@ use App\Model\TimeStampableTrait;
 use App\Repository\EventRepository;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
+
+
 use Doctrine\Common\Collections\ArrayCollection;
-
-
+use Sonata\MediaBundle\Entity\BaseMedia;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -136,8 +137,9 @@ class Event
     #[ORM\ManyToOne(inversedBy: 'eventi')]
     private ?User $organizer = null;
 
-    #[ORM\ManyToOne(targetEntity:'Media')]
-    private ?Media $image;
+    #[ORM\ManyToOne]
+    private ?SonataMediaMedia $image = null;
+
 
     public function __construct()
     {
@@ -349,22 +351,16 @@ class Event
         return $this;
     }
 
-
-    /**
-     * Get the value of image
-     */
-    public function getImage(): ?Media
+    public function getImage(): ?SonataMediaMedia
     {
         return $this->image;
     }
 
-    /**
-     * Set the value of image
-     */
-    public function setImage(?Media $image): self
+    public function setImage(?SonataMediaMedia $image): static
     {
         $this->image = $image;
 
         return $this;
     }
+
 }

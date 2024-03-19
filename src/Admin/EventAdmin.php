@@ -9,6 +9,7 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\Type\ModelListType;
+use Sonata\MediaBundle\Entity\BaseMedia;
 
 final class EventAdmin extends AbstractAdmin
 {
@@ -22,7 +23,7 @@ final class EventAdmin extends AbstractAdmin
             ->add('registrationsStartDate')
             ->add('registrationsEndDate2')
             ->add('image', ModelListType::class, [
-                'class' => Media::class, // Specifica la classe dell'entità associata
+                'class' => BaseMedia::class, // Specifica la classe dell'entità associata
                 'required' => false,
             ])
             ->add('createdAt')
@@ -73,7 +74,7 @@ final class EventAdmin extends AbstractAdmin
             ->add('registrationsStartDate')
             ->add('registrationsEndDate2')
             ->add('image', ModelListType::class, [
-                'class' => Media::class, // Specifica la classe dell'entità associata
+                'class' => BaseMedia::class, // Specifica la classe dell'entità associata
                 'required' => false,
             ])
             ->add('id')

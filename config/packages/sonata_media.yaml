@@ -1,8 +1,4 @@
 sonata_media:
-
-    providers:
-        image:
-            resizer: sonata.media.resizer.square
     class:
         media: App\Entity\SonataMediaMedia
         gallery: App\Entity\SonataMediaGallery
