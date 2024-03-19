@@ -47,8 +47,14 @@ class EventType extends AbstractType
             ->add('registrationsEndDate2', DateTimeType::class , [
                 'widget' => 'single_text',
             ])
+
+            ->add('media', 'sonata_media_type', [
+                'provider' => 'sonata.media.provider.youtube',
+                'context'  => 'default',
+           ])
             ->add('parent')
             ->add('place')
+
             
             
 

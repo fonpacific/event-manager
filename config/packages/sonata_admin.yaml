@@ -4,3 +4,24 @@ sonata_block:
         sonata.admin.block.admin_list:
             contexts: [admin]
 
+sonata_admin:
+    title: 'Admin'
+    security:
+        handler: sonata.admin.security.handler.noop
+
+    # Definizione dei percorsi per i file dei servizi admin
+    dashboard:
+        groups:
+            sonata.admin.group.content:
+                label: 'Content'
+                items:
+                    - sonata.admin.post
+                    # Aggiungi altri admin qui, se necessario
+
+    
+
+    # Configurazione del routing
+    templates:
+        dashboard: '@SonataAdmin/Core/dashboard.html.twig'
+        layout:   '@SonataAdmin/Core/layout.html.twig'
+        user_block: '@SonataAdmin/Core/user_block.html.twig'

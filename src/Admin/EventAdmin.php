@@ -1,14 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Admin;
 
-use Sonata\AdminBundle\Admin\AbstractAdmin;
-use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\MediaBundle\Model\Media;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Admin\AbstractAdmin;
+use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\AdminBundle\Datagrid\DatagridMapper;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 
 final class EventAdmin extends AbstractAdmin
 {
@@ -21,9 +21,10 @@ final class EventAdmin extends AbstractAdmin
             ->add('status')
             ->add('registrationsStartDate')
             ->add('registrationsEndDate2')
-            ->add('coverImageName')
-            ->add('coverImageSize')
-            ->add('coverImageOriginalName')
+            ->add('image', ModelListType::class, [
+                'class' => Media::class, // Specifica la classe dell'entità associata
+                'required' => false,
+            ])
             ->add('createdAt')
             ->add('updatedAt')
             ->add('id')
@@ -36,15 +37,15 @@ final class EventAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $list): void
     {
         $list
+            ->add('parent')
+            ->add('children')
             ->add('startDate')
             ->add('endDate')
             ->add('maxAttendeesNumber')
             ->add('status')
             ->add('registrationsStartDate')
             ->add('registrationsEndDate2')
-            ->add('coverImageName')
-            ->add('coverImageSize')
-            ->add('coverImageOriginalName')
+            ->add('image', 'sonata_type_model_list', [], ['link_parameters' =>['context' => 'news']])
             ->add('createdAt')
             ->add('updatedAt')
             ->add('id')
@@ -63,17 +64,18 @@ final class EventAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $form): void
     {
         $form
+            ->add('parent')
+            ->add('children')
             ->add('startDate')
             ->add('endDate')
             ->add('maxAttendeesNumber')
             ->add('status')
             ->add('registrationsStartDate')
             ->add('registrationsEndDate2')
-            ->add('coverImageName')
-            ->add('coverImageSize')
-            ->add('coverImageOriginalName')
-            ->add('createdAt')
-            ->add('updatedAt')
+            ->add('image', ModelListType::class, [
+                'class' => Media::class, // Specifica la classe dell'entità associata
+                'required' => false,
+            ])
             ->add('id')
             ->add('name')
             ->add('slug')
@@ -84,6 +86,8 @@ final class EventAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
+            ->add('parent')
+            ->add('children')
             ->add('startDate')
             ->add('endDate')
             ->add('maxAttendeesNumber')
@@ -91,8 +95,6 @@ final class EventAdmin extends AbstractAdmin
             ->add('registrationsStartDate')
             ->add('registrationsEndDate2')
             ->add('coverImageName')
-            ->add('coverImageSize')
-            ->add('coverImageOriginalName')
             ->add('createdAt')
             ->add('updatedAt')
             ->add('id')

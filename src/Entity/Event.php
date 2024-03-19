@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
 
+
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -81,7 +82,6 @@ class Event
         $this->status = self::STATUS_PUBLISHED;
     }
 
-
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
     #[Assert\Type('datetime'), Assert\NotNull]
     private ?\DateTimeInterface $startDate = null;
@@ -136,6 +136,8 @@ class Event
     #[ORM\ManyToOne(inversedBy: 'eventi')]
     private ?User $organizer = null;
 
+    #[ORM\ManyToOne(targetEntity:'Media')]
+    private ?Media $image;
 
     public function __construct()
     {
@@ -347,4 +349,22 @@ class Event
         return $this;
     }
 
+
+    /**
+     * Get the value of image
+     */
+    public function getImage(): ?Media
+    {
+        return $this->image;
+    }
+
+    /**
+     * Set the value of image
+     */
+    public function setImage(?Media $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
 }

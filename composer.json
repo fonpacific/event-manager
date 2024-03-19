@@ -16,6 +16,7 @@
         "phpoffice/phpspreadsheet": "^2.0",
         "sonata-project/admin-bundle": "^4.29",
         "sonata-project/doctrine-orm-admin-bundle": "^4.16",
+        "sonata-project/media-bundle": "^4.13",
         "symfony/console": "6.4.*",
         "symfony/doctrine-messenger": "6.4.*",
         "symfony/dotenv": "6.4.*",
