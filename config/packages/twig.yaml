@@ -1,16 +1,11 @@
 twig:
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+
     file_name_pattern: '*.twig'
     form_themes: 
         - 'bootstrap_5_horizontal_layout.html.twig'
         - '@SonataMedia/Form/media_widgets.html.twig'
-
-    debug: '%kernel.debug%'
-    strict_variables: '%kernel.debug%'
-
-  
-        
-
-
 when@test:
     twig:
         strict_variables: true

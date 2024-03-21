@@ -9,7 +9,11 @@
 
     <div class="row">
         <div class="col-12 col-lg-4">
-            <img src="https://via.placeholder.com/600x400" class="card-img-top" alt="{{event.name }}">
+            {% if event.image %}
+                <img src="/uploads/media/default/0001/01/{{event.image.providerReference}}" class="card-img-top" alt="Immagine">
+            {% else %}
+              <img src="https://via.placeholder.com/600x400" class="card-img-top" alt="{{event.name }}">
+            {% endif %}
         </div>
         <div class="col-12 col-lg-8">
             <div class="row mb-4">

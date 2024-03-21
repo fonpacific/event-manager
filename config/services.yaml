@@ -33,4 +33,11 @@ services:
     admin.event:
         class: App\Admin\EventAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\Event, controller: ~, manager_type: orm, group: admin, label: Event }
+            - { name: sonata.admin, model_class: App\Entity\Event, controller: ~, manager_type: orm, group: admin, label: Eventi }
+            
+      #  arguments:
+       #         - ~
+        #        - App\Entity\Event
+         #       - ~
+        #calls:
+         #       - [ setTranslationDomain, [AppBundle]] 

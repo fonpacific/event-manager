@@ -50,6 +50,7 @@ class EventController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($event);
+            $entityManager->persist($event->getImage());
             $entityManager->flush();
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
@@ -71,14 +72,17 @@ class EventController extends AbstractController
 
     #[IsGranted('ROLE_ORGANIZER')]
     #[Route('/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Event $event, EventRepository $eventRepository): Response
+    public function edit(Request $request, Event $event, EventRepository $eventRepository, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('edit', $event);
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $eventRepository->save($event, true);
+           // $eventRepository->save($event, true);
+            $entityManager->persist($event);
+            $entityManager->persist($event->getImage());
+            $entityManager->flush();
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }

@@ -1,9 +1,9 @@
 {% macro default_card(event) %}
   <div class="card h-100">
-    {% if event.coverImageName %}
-        <img src="{{ vich_uploader_asset(event, 'coverImageFile') }}" class="card-img-top" alt="{{ event.name }}">
-   
-        <img src="{{ asset('build/images/placeholder_small.png') }}" class="card-img-top" alt="{{ event.name }}">
+    {% if event.image %}
+         <img src="/uploads/media/default/0001/01/{{event.image.providerReference}}" alt="{{ event.name }}">
+    {% else %}
+        <img src="https://via.placeholder.com/600x400" class="card-img-top" alt="{{event.name }}">
     {% endif %}
     
         <div class="card-body">

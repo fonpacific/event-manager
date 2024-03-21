@@ -17,4 +17,5 @@ class SonataMediaMedia extends BaseMedia
     {
         return $this->id;
     }
+
 }
