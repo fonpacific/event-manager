@@ -18,6 +18,8 @@ use Symfony\Component\Form\FormTypeInterface;
 
 final class EventAdmin extends AbstractAdmin
 {
+
+    public $supportsPreviewMode = true;
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         $filter
@@ -31,7 +33,6 @@ final class EventAdmin extends AbstractAdmin
             ->add('updatedAt')
             ->add('id')
             ->add('name')
-            ->add('slug')
             ->add('description')
         ;
     }
@@ -47,12 +48,9 @@ final class EventAdmin extends AbstractAdmin
             ->add('status')
             ->add('registrationsStartDate')
             ->add('registrationsEndDate2')
-            //->add('image', 'sonata_type_model_list', [], ['link_parameters' =>['context' => 'news']])
             ->add('createdAt')
             ->add('updatedAt')
-            ->add('id')
             ->add('name')
-            ->add('slug')
             ->add('description')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
@@ -79,9 +77,7 @@ final class EventAdmin extends AbstractAdmin
                 'required' => false,
                 'label' => 'Immagine Evento',
             ])
-            ->add('id')
             ->add('name')
-            ->add('slug')
             ->add('description')
             
             ->add('galleria');
@@ -114,7 +110,6 @@ final class EventAdmin extends AbstractAdmin
             ->add('updatedAt')
             ->add('id')
             ->add('name')
-            ->add('slug')
             ->add('description')
         ;
     }

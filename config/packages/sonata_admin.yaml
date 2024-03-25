@@ -9,6 +9,7 @@ sonata_admin:
    
     # Configurazione del routing
     templates:
+        preview: '@SonataAdmin/CRUD/preview.html.twig'
         dashboard: '@SonataAdmin/Core/dashboard.html.twig'
         layout:   '@SonataAdmin/standard_layout.html.twig'
         user_block: '@SonataAdmin/Core/user_block.html.twig'
