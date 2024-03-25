@@ -141,29 +141,29 @@ class EventController extends AbstractController
     }
 
 
-    #[IsGranted('ROLE_USER')]
-    #[Route('event/{id}/add', name: 'app_event_image', methods: ['GET', 'POST'])]
-    public function add(Request $request,EntityManagerInterface $entityManager, Event $event): Response
-    {
+    // #[IsGranted('ROLE_USER')]
+    // #[Route('event/{id}/add', name: 'app_event_image', methods: ['GET', 'POST'])]
+    // public function add(Request $request,EntityManagerInterface $entityManager, Event $event): Response
+    // {
 
-        $form = $this->createForm(ImageType::class, $event);
-        $form->handleRequest($request);
+    //     $form = $this->createForm(ImageType::class, $event);
+    //     $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $event->addImage($event->getImmagine());
-            $entityManager->persist($event);
-            $entityManager->persist($event->getImmagine());
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $event->addImage($event->getImmagine());
+    //         $entityManager->persist($event);
+    //         $entityManager->persist($event->getImmagine());
 
-            $entityManager->flush();
+    //         $entityManager->flush();
           
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
-        }
+    //         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+    //     }
 
-        return $this->render('event/addImage.html.twig', [
-            'form' => $form,
-            'event'=> $event,
-        ]);
+    //     return $this->render('event/addImage.html.twig', [
+    //         'form' => $form,
+    //         'event'=> $event,
+    //     ]);
         
-    }
+    // }
     
 }

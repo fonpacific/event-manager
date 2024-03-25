@@ -8,13 +8,14 @@ use App\Model\DescriptionTrait;
 use App\Model\IdentifiableTrait;
 use Doctrine\ORM\Mapping as ORM;
 use App\Model\TimeStampableTrait;
+use App\Entity\SonataMediaGallery;
 use App\Repository\EventRepository;
+use Sonata\MediaBundle\Entity\BaseMedia;
+
+
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
-
-
 use Doctrine\Common\Collections\ArrayCollection;
-use Sonata\MediaBundle\Entity\BaseMedia;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -146,12 +147,8 @@ class Event
     #[ORM\OneToMany(targetEntity: SonataMediaMedia::class, mappedBy: 'event')]
     private Collection $images;
 
-    #[ORM\ManyToOne]
-    private ?SonataMediaMedia $immagine = null;
-
-
-   
-
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    private ?SonataMediaGallery $galleria = null;
 
     public function __construct()
     {
@@ -418,26 +415,17 @@ class Event
         return $this;
     }
 
-
-
-
- 
-
-    /**
-     * Get the value of immagine
-     */
-    public function getImmagine(): ?SonataMediaMedia
+    public function getGalleria(): ?SonataMediaGallery
     {
-        return $this->immagine;
+        return $this->galleria;
     }
 
-    /**
-     * Set the value of immagine
-     */
-    public function setImmagine(?SonataMediaMedia $immagine): self
+    public function setGalleria(?SonataMediaGallery $galleria): static
     {
-        $this->immagine = $immagine;
+        $this->galleria = $galleria;
 
         return $this;
     }
+
+
 }

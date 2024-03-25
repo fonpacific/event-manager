@@ -84,11 +84,16 @@ final class EventAdmin extends AbstractAdmin
             ->add('slug')
             ->add('description')
             
-            ->add('immagine', ModelListType::class, [
-                'class' => SonataMediaMedia::class, // Specifica la classe dell'entità associata
-                'required' => false,
-                'label' => 'Galleria Immagini',
-            ])
+            ->add('galleria');
+
+            // ->add('immagine', CollectionType::class, [ // Assuming ImageType handles a collection of images
+            //     'entry_type' => ImageType::class,
+            //     'allow_add' => true,
+            //     'allow_delete' => true,
+            //     'by_reference' => false,
+            //     'required' => false,
+            //     'label' => 'Galleria Immagini',
+            // ])
 
         ;
     }
