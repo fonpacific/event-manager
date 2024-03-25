@@ -6,17 +6,20 @@ use App\Entity\User;
 use App\Entity\Event;
 use App\EventManager;
 use App\Form\EventType;
+use App\Form\ImageType;
+use App\Entity\SonataMediaMedia;
 use App\Repository\EventRepository;
+use App\Message\UserRegisteredToAnEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Exception\UserIsAlreadyRegisteredThisEventException;
-use App\Message\UserRegisteredToAnEvent;
+use Sonata\MediaBundle\Form\Type\MediaType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 #[Route('/event')]
 class EventController extends AbstractController
@@ -137,5 +140,30 @@ class EventController extends AbstractController
         return $this->redirectToRoute('welcome', [],Response::HTTP_SEE_OTHER);
     }
 
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('event/{id}/add', name: 'app_event_image', methods: ['GET', 'POST'])]
+    public function add(Request $request,EntityManagerInterface $entityManager, Event $event): Response
+    {
+
+        $form = $this->createForm(ImageType::class, $event);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $event->addImage($event->getImmagine());
+            $entityManager->persist($event);
+            $entityManager->persist($event->getImmagine());
+
+            $entityManager->flush();
+          
+            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('event/addImage.html.twig', [
+            'form' => $form,
+            'event'=> $event,
+        ]);
+        
+    }
     
 }

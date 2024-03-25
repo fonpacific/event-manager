@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Aggiungi immagine{% endblock %}
+
+{% block body %}
+    <h1>Aggiungi Immagine</h1>
+
+    {{ include('event/_formImage.html.twig', {'button_label': 'Aggiungi'}) }}
+
+    <a href="{{ path('app_event_index') }}">back to list</a>
+
+{% endblock %}
+
+
+

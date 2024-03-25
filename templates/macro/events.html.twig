@@ -1,8 +1,8 @@
 {% macro default_card(event) %}
   <div class="card h-100">
     {% if event.image %}
-         <img src="/uploads/media/default/0001/01/{{event.image.providerReference}}" alt="{{ event.name }}">
-    {% else %}
+       <img src="{{ sonata_path(event.image, 'big') }}" class="card-img-top" alt="{{event.name }}"> 
+          {% else %}
         <img src="https://via.placeholder.com/600x400" class="card-img-top" alt="{{event.name }}">
     {% endif %}
     
@@ -10,8 +10,8 @@
             <h5 class="card-title">{{ event.name }}</h5>
             <p class="card-text"> {{ _self.status_badge(event.status) }} </p>
             <p class="card-text"> {{ event.description }} </p>
-            <p class="card-text"> {{ event.startDate ? event.startDate|format_datetime(pattern='d-m-Y') : 'NA' }} 
-                -> {{ event.endDate ? event.endDate|format_datetime(pattern='d-m-Y') : 'NA' }}
+            <p class="card-text"> {{ event.startDate ? event.startDate|date('d-m-Y') : 'NA' }} 
+                -> {{ event.endDate ? event.endDate|date('d-m-Y') : 'NA' }}
             </p>
             <div class="btn-group">
                 {% if is_granted("ROLE_USER") %}

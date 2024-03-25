@@ -140,12 +140,25 @@ class Event
     #[ORM\ManyToOne]
     private ?SonataMediaMedia $image = null;
 
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'images')]
+    private ?self $event = null;
+
+    #[ORM\OneToMany(targetEntity: SonataMediaMedia::class, mappedBy: 'event')]
+    private Collection $images;
+
+    #[ORM\ManyToOne]
+    private ?SonataMediaMedia $immagine = null;
+
+
+   
+
 
     public function __construct()
     {
         $this->children = new ArrayCollection();
         $this->status = self::STATUS_DRAFT;
         $this->registrations = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getStartDate(): ?\DateTimeInterface
@@ -363,4 +376,68 @@ class Event
         return $this;
     }
 
+    public function getEvent(): ?self
+    {
+        return $this->event;
+    }
+
+    public function setEvent(?self $event): static
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SonataMediaMedia>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(SonataMediaMedia $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(SonataMediaMedia $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getEvent() === $this) {
+                $image->setEvent(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
+ 
+
+    /**
+     * Get the value of immagine
+     */
+    public function getImmagine(): ?SonataMediaMedia
+    {
+        return $this->immagine;
+    }
+
+    /**
+     * Set the value of immagine
+     */
+    public function setImmagine(?SonataMediaMedia $immagine): self
+    {
+        $this->immagine = $immagine;
+
+        return $this;
+    }
 }

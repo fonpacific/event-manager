@@ -2,6 +2,7 @@
 
 namespace App\Admin;
 
+use App\Form\ImageType;
 use App\Entity\SonataMediaMedia;
 use Sonata\MediaBundle\Model\Media;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -10,7 +11,10 @@ use Sonata\MediaBundle\Entity\BaseMedia;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
+use Sonata\AdminBundle\Form\Type\CollectionType as TypeCollectionType;
 use Sonata\AdminBundle\Form\Type\ModelListType;
+use Sonata\AdminBundle\Form\Type\CollectionType;
+use Symfony\Component\Form\FormTypeInterface;
 
 final class EventAdmin extends AbstractAdmin
 {
@@ -73,11 +77,19 @@ final class EventAdmin extends AbstractAdmin
             ->add('image', ModelListType::class, [
                 'class' => SonataMediaMedia::class, // Specifica la classe dell'entità associata
                 'required' => false,
+                'label' => 'Immagine Evento',
             ])
             ->add('id')
             ->add('name')
             ->add('slug')
             ->add('description')
+            
+            ->add('immagine', ModelListType::class, [
+                'class' => SonataMediaMedia::class, // Specifica la classe dell'entità associata
+                'required' => false,
+                'label' => 'Galleria Immagini',
+            ])
+
         ;
     }
 

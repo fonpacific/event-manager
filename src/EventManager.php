@@ -52,6 +52,14 @@ class EventManager {
         $this->entityManager->flush();
     }
 
+    public function aggiungiImage(Event $event): void{
+
+        $event->addImage($event->getImage());
+
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+    }
+
     public function findRegistration(Event $event, User $user): ?Registration {
 
         return $this->entityManager->getRepository(Registration::class)->findOneBy([
